@@ -103,6 +103,16 @@ public class Genome {
 	}
 	
 	/**
+	 * @param orig
+	 * @return clone of orig but with offspringCount set to zero
+	 */
+	public Genome clone(Genome orig) {
+		return new Genome(orig.eyesNumber, orig.earsNumber, orig.legsNumber,
+						  orig.finsNumber, orig.wingsNumber, orig.coatThickness,
+						  orig.height, orig.weight, orig.metabolism, orig.cooperationFlag);
+	}
+	
+	/**
 	 * @return the eyesNumber
 	 */
 	public int getEyesNumber() {
