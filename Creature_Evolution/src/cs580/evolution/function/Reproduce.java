@@ -27,7 +27,11 @@ public class Reproduce {
 		int[] childarray = new int[8];
 		double h;
 		boolean coop;
-		int offspring;
+		//int offspring;
+		/*
+		 * Child always have default offspring count set to zero - he simply did not reproduce yet.
+		 * We add offspring count in main class, not here. We may bring it back or change later though - will discuss. -Natalia
+		 */
 		
 		momarray[0] = mom.getEyesNumber();
 		momarray[1] = mom.getEarsNumber();
@@ -47,6 +51,7 @@ public class Reproduce {
 		dadarray[6] = dad.getWeight();
 		dadarray[7] = dad.getMetabolism();
 		
+		//Please make sure at least one gene is inherited from mom/dad: if all genes inherited from only one parent then we just have a clone. -Natalia
 		if(crossover > 0)
 		for(int i=0;i<crossover;i++)
 		childarray[i] = momarray[i];
@@ -55,16 +60,18 @@ public class Reproduce {
 		for(int i=crossover;i<8;i++)
 		childarray[i] = dadarray[i];
 		
-		offspring = mom.getOffspringCount();
+		//offspring = mom.getOffspringCount();
+		//So cooperation flag is always inherited from dad? That can work. -Natalia
 		coop = dad.isCooperationFlag();
 		
+		//Why 4? Shouldn't it be 6 since height is gene #7? -Natalia
 		if(crossover > 4 )
 		h = dad.getHeight();	//here and below - changed getHeight to getHeight() -Natalia
 		else
 		h = mom.getHeight();
 		
 		Genome kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], h, childarray[6], childarray[7], coop);
-		kid.setOffspringCount(offspring);
+		//kid.setOffspringCount(offspring);
 		
 		
 		return kid;
