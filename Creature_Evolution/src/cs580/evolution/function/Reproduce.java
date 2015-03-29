@@ -21,7 +21,6 @@ public class Reproduce {
 	public Genome produceChild(Genome mom, Genome dad) {
 		Random r = new Random();
 		int crossover = r.nextInt(8);
-		//Please add 10th gene - cooperationFlag. -Natalia
 		
 		int[] momarray = new int[8];
 		int[] dadarray = new int[8];
