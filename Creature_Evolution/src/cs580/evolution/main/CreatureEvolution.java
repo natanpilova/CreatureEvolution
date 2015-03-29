@@ -6,6 +6,7 @@ package cs580.evolution.main;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs580.evolution.function.Reproduce;
 import cs580.evolution.pojo.Environment;
 import cs580.evolution.pojo.Genome;
 
@@ -46,7 +47,8 @@ public class CreatureEvolution {
 		List<Genome> newPopulation = null;			//offspring
 		Genome mom, dad, child;
 		Environment environment = initEnvironment;
-		//TODO instantiate all objects containing selection, reproduction, mutation, environment (use set of env. coefficients from input) functions here
+		Reproduce reproduce = new Reproduce();
+		//TODO instantiate all other objects: selection, mutation, environment (use set of env. coefficients from input) functions here
 		
 		//outer loop: one iteration = one generation
 		for (int generationCount = 1; generationCount <= generationsNumber; generationCount++) {
@@ -71,8 +73,8 @@ public class CreatureEvolution {
 				/*
 				 * reproduce
 				 */
-				//TODO will be like: child = offspringGenerator.produceChild(mom, dad);
-				child = mom.clone(mom);
+				//child = mom.clone(mom);
+				child = reproduce.produceChild(mom, dad);
 				mom.addOffspring(1);
 				dad.addOffspring(1);
 				
