@@ -50,10 +50,10 @@ public class Genome {
 	private int finsNumber;				//gene #4: number of fins - for swimming
 	private int wingsNumber;			//gene #5: number of wings - for flying
 	private int coatThickness;			//gene #6: coat thickness in cm (fur/feathers/fat layer)
-	private double height;				//gene #7: height in meters
-	private int weight;					//gene #8: weight in kg
-	private int metabolism;				//gene #9: energy (food) required per day in kCal
-	private boolean cooperationFlag;	//gene #10: true if cooperates with others, false if does not
+	private int weight;				//gene #7: weight in kg
+	private int metabolism;				//gene #8: energy (food) required per day in kCal
+	private double height;				//gene #9: height in meters
+	private boolean cooperationFlag;		//gene #10: true if cooperates with others, false if does not
 	private int offspringCount;			//number of offspring produced
 	
 	/**
@@ -86,18 +86,17 @@ public class Genome {
 	 * @param metabolism
 	 * @param cooperationFlag
 	 */
-	public Genome(int eyesNumber, int earsNumber, int legsNumber,
-			int finsNumber, int wingsNumber, int coatThickness, double height,
-			int weight, int metabolism, boolean cooperationFlag) {
+	public Genome(int eyesNumber, int earsNumber, int legsNumber, int finsNumber, int wingsNumber, int coatThickness, 
+				  int weight, int metabolism, double height, boolean cooperationFlag) {
 		this.eyesNumber = eyesNumber;
 		this.earsNumber = earsNumber;
 		this.legsNumber = legsNumber;
 		this.finsNumber = finsNumber;
 		this.wingsNumber = wingsNumber;
 		this.coatThickness = coatThickness;
-		this.height = height;
 		this.weight = weight;
 		this.metabolism = metabolism;
+		this.height = height;
 		this.cooperationFlag = cooperationFlag;
 		this.offspringCount = 0;	//freshly created genome(creature) does not have offspring yet
 	}
@@ -109,7 +108,7 @@ public class Genome {
 	public Genome clone(Genome orig) {
 		return new Genome(orig.eyesNumber, orig.earsNumber, orig.legsNumber,
 						  orig.finsNumber, orig.wingsNumber, orig.coatThickness,
-						  orig.height, orig.weight, orig.metabolism, orig.cooperationFlag);
+						  orig.weight, orig.metabolism, orig.height, orig.cooperationFlag);
 	}
 	
 	/**
