@@ -22,7 +22,7 @@ public class Environment {
 	
 	public static final int MIN_POLLUTION_LEVEL = 0;			//no pollution
 	public static final int MAX_POLLUTION_LEVEL = 100;			//100% polluted non-survivable environment
-	public static final int POLLUTION_MUTATION_THRESHHOLD = 50;	//if 50% polluted then higher mutation probability
+	public static final int POLLUTION_MUTATION_THRESHHOLD = 50;	//if 50% polluted then possibly higher mutation probability
 	
 	public static final int MIN_FOOD_AMOUNT = 0;				//no food available
 	public static final int MAX_FOOD_AMOUNT = 1000000000;		//1 billion kCal
