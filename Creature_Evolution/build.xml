@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="CreatureEvolution" basedir="." default="jar">
+	<property name="project" value="CreatureEvolution" />
+	<property name="jar.dir" value="/opt/main" />
+	<property name="basedir" value="." />
+	<property name="src.dir" value="${basedir}/src" />
+	<property name="build.classes.dir" value="${basedir}/bin" />
+	<property name="docs.dir" location="${basedir}/documentation/javadoc" />
+	<property name="dist.dir" value="C:/dist" />
+
+	<path id="combined.classpath">
+		<fileset dir="${jar.dir}">
+			<exclude name="**/*xml" />
+		</fileset>
+	</path>
+	
+	<manifestclasspath property="mf.classpath" jarfile="${jar.dir}/${ant.project.name}.jar" >
+		<classpath id="classpath" refid="combined.classpath" />
+	</manifestclasspath>
+
+	<target name="clean">
+		<!--  Delete the ${build} directory trees and javadoc -->
+		<delete failonerror="false" includeemptydirs="true">
+			<fileset dir="${build.classes.dir}" includes="**/*" />
+			<fileset dir="${docs.dir}" includes="**/*" />
+		</delete>
+	</target>
+	
+	<target name="makedir">
+	    <mkdir dir="${docs.dir}" />
+	</target>
+	
+	<target name="compile" depends="clean, makedir">
+		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" includeantruntime="false">
+			<classpath id="classpath">
+				<fileset dir="${jar.dir}">
+					<exclude name="**/*xml" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+	
+	<!-- Creates Javadoc -->
+	<target name="docs" depends="compile">
+	    <javadoc packagenames="src" sourcepath="${src.dir}" destdir="${docs.dir}">
+	     	<fileset dir="${src.dir}">
+	        	<include name="**" />
+	        </fileset>
+	    </javadoc>
+	</target>
+	
+	<target name="jar" depends="compile, docs">
+		<jar destfile="${dist.dir}/${project}.jar" basedir="${build.classes.dir}" >
+			<fileset dir="${src.dir}" />
+			<manifest>
+				<attribute name="Main-Class" value="cs580.evolution.main.CreatureEvolution" />
+				<attribute name="Class-Path" value="${mf.classpath}" />
+			</manifest>
+		</jar>
+	</target>
+
+</project>
