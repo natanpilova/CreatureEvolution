@@ -30,7 +30,7 @@ public class CreatureEvolution {
 		/*
 		 * generating random initial population
 		 */
-		List<Genome> initPopulation = generateRandomPopulation(1000);	//arbitrary number
+		List<Genome> initPopulation = generateRandomPopulation(1000);	//arbitrary number of individuals
 		//TODO save randomly generated population to a file so it's possible to re-use it later
 		
 		//TODO set environmental characteristics from input args
@@ -85,7 +85,6 @@ public class CreatureEvolution {
 				/*
 				 * reproduce
 				 */
-				//child = mom.clone(mom);
 				child = reproduce.produceChild(mom, dad);
 				mom.addOffspring(1);
 				dad.addOffspring(1);
