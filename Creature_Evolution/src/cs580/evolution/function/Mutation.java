@@ -62,7 +62,7 @@ public class Mutation {
 			break;
 		case WEIGHT:
 			int weight= individual.getWeight();
-			weight= (weight+100)> Genome.MAX_WEIGHT? weight-10 :weight+10;
+			weight= (weight+10)> Genome.MAX_WEIGHT? weight-10 :weight+10;
 			individual.setWeight(weight);
 			break;
 		case METABOLISM:

@@ -12,7 +12,11 @@ import cs580.evolution.pojo.Environment;
 import cs580.evolution.pojo.Genome;
 
 /**
- * @author Natalia Anpilova (will add all the team here)
+ * @author Natalia Anpilova
+ * @author Ashwin Hole
+ * @author Divya Kondaviti
+ * @author Ankith
+ * @author Manjusha
  *
  */
 public class CreatureEvolution {
@@ -21,8 +25,14 @@ public class CreatureEvolution {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//TODO read population from file
-		List<Genome> initPopulation = new ArrayList<Genome>();
+		//TODO add choice from input args: read population from file or generate random
+		//List<Genome> initPopulation = new ArrayList<Genome>();
+		/*
+		 * generating random initial population
+		 */
+		List<Genome> initPopulation = generateRandomPopulation(1000);	//arbitrary number
+		//TODO save randomly generated population to a file so it's possible to re-use it later
+		
 		//TODO set environmental characteristics from input args
 		Environment initEnvironment = new Environment();
 		
@@ -103,5 +113,18 @@ public class CreatureEvolution {
 		Genome winner = population.get(0);
 		//TODO use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
 		return winner;
+	}
+	
+	/**
+	 * Generates random population of the given size
+	 * @param size number of individuals in population
+	 * @return population consisting of randomly generated genomes
+	 */
+	private static List<Genome> generateRandomPopulation(int size) {
+		List<Genome> randomPopulation = new ArrayList<Genome>();
+		for (int i = 0; i < size; i++) {
+			randomPopulation.add(Genome.generateRandomGenome());
+		}
+		return randomPopulation;
 	}
 }

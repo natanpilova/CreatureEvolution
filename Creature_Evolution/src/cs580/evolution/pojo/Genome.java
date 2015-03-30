@@ -3,6 +3,8 @@
  */
 package cs580.evolution.pojo;
 
+import java.util.Random;
+
 /**
  * @author Natalia Anpilova (will add all the team here)
  *
@@ -50,10 +52,10 @@ public class Genome {
 	private int finsNumber;				//gene #4: number of fins - for swimming
 	private int wingsNumber;			//gene #5: number of wings - for flying
 	private int coatThickness;			//gene #6: coat thickness in cm (fur/feathers/fat layer)
-	private int weight;				//gene #7: weight in kg
+	private int weight;					//gene #7: weight in kg
 	private int metabolism;				//gene #8: energy (food) required per day in kCal
 	private double height;				//gene #9: height in meters
-	private boolean cooperationFlag;		//gene #10: true if cooperates with others, false if does not
+	private boolean cooperationFlag;	//gene #10: true if cooperates with others, false if does not
 	private int offspringCount;			//number of offspring produced
 	
 	/**
@@ -99,6 +101,66 @@ public class Genome {
 		this.height = height;
 		this.cooperationFlag = cooperationFlag;
 		this.offspringCount = 0;	//freshly created genome(creature) does not have offspring yet
+	}
+	
+	/**
+	 * Generates a random genome
+	 * @return genome with random genes
+	 */
+	public static Genome generateRandomGenome() {
+		Genome randomGenome = new Genome();
+		Random rand = new Random(); 
+		
+		int randomInt = rand.nextInt(MAX_EYES_NUMBER+1);
+		if (randomInt < MIN_EYES_NUMBER)
+			randomInt = MIN_EYES_NUMBER;
+		randomGenome.setEyesNumber(randomInt);
+		
+		randomInt = rand.nextInt(MAX_EARS_NUMBER+1);
+		if (randomInt < MIN_EARS_NUMBER)
+			randomInt = MIN_EARS_NUMBER;
+		randomGenome.setEarsNumber(randomInt);
+		
+		randomInt = rand.nextInt(MAX_LEGS_NUMBER+1);
+		if (randomInt < MIN_LEGS_NUMBER)
+			randomInt = MIN_LEGS_NUMBER;
+		randomGenome.setLegsNumber(randomInt);
+		
+		randomInt = rand.nextInt(MAX_FINS_NUMBER+1);
+		if (randomInt < MIN_FINS_NUMBER)
+			randomInt = MIN_FINS_NUMBER;
+		randomGenome.setFinsNumber(randomInt);
+		
+		randomInt = rand.nextInt(MAX_WINGS_NUMBER+1);
+		if (randomInt < MIN_WINGS_NUMBER)
+			randomInt = MIN_WINGS_NUMBER;
+		randomGenome.setWingsNumber(randomInt);
+		
+		randomInt = rand.nextInt(MAX_COAT_THICKNESS+1);
+		if (randomInt < MIN_COAT_THICKNESS)
+			randomInt = MIN_COAT_THICKNESS;
+		randomGenome.setCoatThickness(randomInt);
+		
+		randomInt = rand.nextInt(MAX_WEIGHT+1);
+		if (randomInt < MIN_WEIGHT)
+			randomInt = MIN_WEIGHT;
+		randomGenome.setWeight(randomInt);
+		
+		randomInt = rand.nextInt(MAX_METABOLISM+1);
+		if (randomInt < MIN_METABOLISM)
+			randomInt = MIN_METABOLISM;
+		randomGenome.setMetabolism(randomInt);
+		
+		double randomDouble = rand.nextDouble();
+		if (randomDouble < MIN_HEIGHT)
+			randomDouble = MIN_HEIGHT;
+		else if (randomDouble > MAX_HEIGHT)
+			randomDouble = MAX_HEIGHT;
+		randomGenome.setHeight(randomDouble);
+		
+		randomGenome.setCooperationFlag(rand.nextBoolean());
+		
+		return randomGenome;
 	}
 	
 	/**
@@ -205,7 +267,7 @@ public class Genome {
 	/**
 	 * @param height the height to set
 	 */
-	public void setHeight(int height) {
+	public void setHeight(double height) {
 		this.height = height;
 	}
 	
