@@ -6,6 +6,7 @@ package cs580.evolution.main;
 import java.util.ArrayList;
 import java.util.List;
 
+import cs580.evolution.function.EnviGen;
 import cs580.evolution.function.Mutation;
 import cs580.evolution.function.Reproduce;
 import cs580.evolution.pojo.Environment;
@@ -15,7 +16,7 @@ import cs580.evolution.pojo.Genome;
  * @author Natalia Anpilova
  * @author Ashwin Hole
  * @author Divya Kondaviti
- * @author Ankith
+ * @author Ankith Raj
  * @author Manjusha
  *
  */
@@ -58,9 +59,10 @@ public class CreatureEvolution {
 		List<Genome> newPopulation = null;			//offspring
 		Genome mom, dad, child;
 		Environment environment = initEnvironment;
+		EnviGen envGenerator = new EnviGen();
 		Reproduce reproduce = new Reproduce();
 		Mutation mutation = new Mutation();
-		//TODO instantiate the rest of function objects: selection, environment (use set of env. coefficients from input) functions here
+		//TODO instantiate selection function
 		
 		//outer loop: one iteration = one generation
 		for (int generationCount = 1; generationCount <= generationsNumber; generationCount++) {
@@ -104,13 +106,13 @@ public class CreatureEvolution {
 			population.addAll(newPopulation);
 			
 			/*
-			 * environment
+			 * environment change with every new generation
 			 */
-			//TODO change environment with env. function like: environment = envChange.generateEnvironment(environment, generationCount)
+			environment = envGenerator.EG(environment, generationCount);
 		}
 		//TODO select genome with max fitness
 		Genome winner = population.get(0);
-		//TODO use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
+		//TODO later: use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
 		return winner;
 	}
 	
