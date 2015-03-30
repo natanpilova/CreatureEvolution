@@ -5,14 +5,17 @@ import java.util.Random;
 import cs580.evolution.pojo.Genome;
 
 
-
+/**
+ * @author Divya Kondaviti
+ *
+ */
 public class Mutation {
 	
-	public int mutationProbability()
+	public double mutationProbability()
 	{
 		Random rand = new Random(); 
 		double randomNumber = rand.nextDouble(); 
-		return (int) randomNumber;	//Why int? We need double here
+		return randomNumber;	
 	}
 	
 	public static Genome mutate(Genome individual)
@@ -54,7 +57,7 @@ public class Mutation {
 			break;
 		case HEIGHT:
 			double height= individual.getHeight();
-			height=(height+1)> Genome.MAX_HEIGHT? height-10: height +10;
+			height=(height+10)> Genome.MAX_HEIGHT? height-10: height +10;
 			individual.setHeight((int) height);
 			break;
 		case WEIGHT:
@@ -72,12 +75,7 @@ public class Mutation {
 		    boolean cooperationFlag_random=random.nextBoolean();
 		    individual.setCooperationFlag(cooperationFlag_random);
 		    break;
-		//offspring count is actually not a gene, just a counter - so we don't mutate it. -Natalia
-		/*case OFFSPRINGCOUNT:
-			int offSpring= individual.getOffspringCount();
-			offSpring=( offSpring+1) > Genome.MAX_OFFSPRING_COUNT? offSpring-1 : offSpring+1;
-			individual.setOffspringCount(offSpring);
-			break;*/
+		
 		}	
 		return individual;
 		
