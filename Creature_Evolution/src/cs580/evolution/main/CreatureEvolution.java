@@ -139,6 +139,7 @@ public class CreatureEvolution {
 	}
 	
 	/**
+	 * Determines the winner individual - the genome with the highest fitness level
 	 * @param population
 	 * @param envmt environment
 	 * @return the <fitnessLevel, Genome> entry with the highest fitness level
