@@ -26,15 +26,15 @@ public class CreatureEvolution {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//TODO add choice from input args: read population from file or generate random
+		//TODO after progress check: add choice from input args: read population from file or generate random
 		//List<Genome> initPopulation = new ArrayList<Genome>();
 		/*
 		 * generating random initial population
 		 */
 		List<Genome> initPopulation = generateRandomPopulation(1000);	//arbitrary number of individuals
-		//TODO save randomly generated population to a file so it's possible to re-use it later
+		//TODO after progress check: save randomly generated population to a file so it's possible to re-use it later
 		
-		//TODO set environmental characteristics from input args
+		//TODO after progress check: set environmental characteristics from input args
 		Environment initEnvironment = new Environment();
 		
 		//TODO now just one input argument - number of generations; will add the rest and validation later
@@ -72,7 +72,7 @@ public class CreatureEvolution {
 			 * parents pre-selection
 			 */
 			//TODO culling - discard individuals whose fitness is too low (define threshold in parent selector class)
-			//will be like: population = parentSelector.cull(population, environment), use fitness function in cull()
+			//will be like: population = parentSelector.cull(population, environment), use fitness function fitness.getFitnessLevel() in cull()
 			
 			//inner loop: generating offspring as new population
 			//TODO instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
@@ -80,13 +80,14 @@ public class CreatureEvolution {
 				/*
 				 * parents selection
 				 */
-				//TODO: both mom and dad will be selected like: mom = parentSelection.getParent(population, environment), use fitness function
+				//TODO: both mom and dad will be selected like: mom = parentSelection.getParent(population, environment), use fitness function fitness.getFitnessLevel()
 				mom = population.get(0);
 				dad = population.get(1);
 				
 				/*
 				 * reproduce
 				 */
+				//TODO after progress check: adjust metabolism with weight, height and other genes. Also account for unlikely situations like height is 10cm and weight is 1 ton. -Natalia
 				child = reproduce.produceChild(mom, dad);
 				mom.addOffspring(1);
 				dad.addOffspring(1);
@@ -112,7 +113,7 @@ public class CreatureEvolution {
 		}
 		//TODO select genome with max fitness
 		Genome winner = population.get(0);
-		//TODO later: use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
+		//TODO after progress check: use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
 		return winner;
 	}
 	
