@@ -5,8 +5,11 @@ package cs580.evolution.main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import cs580.evolution.function.EnviGen;
+import cs580.evolution.function.Fitness;
 import cs580.evolution.function.Mutation;
 import cs580.evolution.function.Reproduce;
 import cs580.evolution.pojo.Environment;
@@ -40,9 +43,12 @@ public class CreatureEvolution {
 		//TODO now just one input argument - number of generations; will add the rest and validation later
 		if (args.length > 0) {
 			int generationsNumber = Integer.parseInt(args[0]);
-			Genome winner = geneticAlgoritm(initPopulation, initEnvironment, generationsNumber);
+			Entry<Integer, Genome> winner = geneticAlgoritm(initPopulation, initEnvironment, generationsNumber);
 			System.out.println("WINNER:");	
-			System.out.println(winner.toString());
+			System.out.println("individual with genome:");
+			System.out.println(winner.getValue().toString());
+			System.out.println("fitness level:");
+			System.out.println(winner.getKey());
 		} else
 			System.err.println("Invalid number of input arguments");
 	}
@@ -54,7 +60,7 @@ public class CreatureEvolution {
 	 * @param generationsNumber
 	 * @return winner's genome
 	 */
-	public static Genome geneticAlgoritm(List<Genome> initPopulation, Environment initEnvironment, int generationsNumber) {
+	public static Entry<Integer, Genome> geneticAlgoritm(List<Genome> initPopulation, Environment initEnvironment, int generationsNumber) {
 		List<Genome> population = initPopulation;	//current population, parents
 		List<Genome> newPopulation = null;			//offspring
 		Genome mom, dad, child;
@@ -75,7 +81,7 @@ public class CreatureEvolution {
 			//will be like: population = parentSelector.cull(population, environment), use fitness function fitness.getFitnessLevel() in cull()
 			
 			//inner loop: generating offspring as new population
-			//TODO instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
+			//TODO maybe: instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
 			for (int i = 0; i < population.size(); i++) {
 				/*
 				 * parents selection
@@ -111,8 +117,10 @@ public class CreatureEvolution {
 			 */
 			environment = envGenerator.EG(environment, generationCount);
 		}
-		//TODO select genome with max fitness
-		Genome winner = population.get(0);
+		
+		//select individual with max fitness level
+		Entry<Integer, Genome> winner = getWinner(population, environment);
+		
 		//TODO after progress check: use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
 		return winner;
 	}
@@ -128,5 +136,25 @@ public class CreatureEvolution {
 			randomPopulation.add(Genome.generateRandomGenome());
 		}
 		return randomPopulation;
+	}
+	
+	/**
+	 * @param population
+	 * @param envmt environment
+	 * @return the <fitnessLevel, Genome> entry with the highest fitness level
+	 */
+	private static Entry<Integer, Genome> getWinner(List<Genome> population, Environment envmt) {
+		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>();	//to store calculated fitness levels for population
+		Fitness fit = new Fitness();
+		int fitLevel;
+		
+		//calculate fitness for population and add to the map
+		for (Genome gen : population) {
+			fitLevel = fit.getFitnessLevel(gen, envmt);
+			popuMap.put(fitLevel, gen);
+		}
+		
+		//the <fitnessLevel, Genome> entry with the highest fitness level
+		return popuMap.lastEntry();
 	}
 }
