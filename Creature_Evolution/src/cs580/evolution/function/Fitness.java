@@ -14,6 +14,8 @@ public class Fitness {
 
 	/**
 	 * fitness function
+	 * Min possible level is 0
+	 * Max possible level is 52 (calculated based on max genome values)
 	 * @param ind
 	 * @param env current environment
 	 * @return fitness level of individual
@@ -41,12 +43,12 @@ public class Fitness {
 		
 		//if chilly or even cold, coat thickness matters
 		if (env.getTemperature() < 10)
-			fitnessLevel += ind.getCoatThickness();
+			fitnessLevel += Math.log1p(ind.getCoatThickness());
 		
-		//natural log from weight plus 1 adds up to fitness level - the bigger the stronger
+		//the bigger the stronger
 		fitnessLevel += Math.log1p(ind.getWeight());
 		
-		//natural log from height plus 1 adds up to fitness level - the taller the better
+		//the taller the better
 		fitnessLevel += Math.log1p(ind.getHeight());
 		
 		//the less foods individual needs, the better
@@ -56,6 +58,11 @@ public class Fitness {
 		if (ind.isCooperationFlag())
 			fitnessLevel += 10;
 		
-		return (int) fitnessLevel;
+		//high pollution lowers the fitness level
+		if (env.getPollutionLevel() > Environment.POLLUTION_MUTATION_THRESHHOLD)
+			fitnessLevel -= Math.log1p(env.getPollutionLevel());
+		
+		return (int) Math.round(fitnessLevel);
 	}
+	
 }
