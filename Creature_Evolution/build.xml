@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="CreatureEvolution" basedir="." default="jar">
 	<property name="project" value="CreatureEvolution" />
-	<property name="jar.dir" value="/opt/main" />
+	<property name="jar.dir" value="C:/dist/lib" />
 	<property name="basedir" value="." />
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="build.classes.dir" value="${basedir}/bin" />
