@@ -339,13 +339,17 @@ public class Genome {
 	 */
 	@Override
 	public String toString() {
-		return "Genome [eyesNumber=" + eyesNumber + ", earsNumber="
-				+ earsNumber + ", legsNumber=" + legsNumber + ", finsNumber="
-				+ finsNumber + ", wingsNumber=" + wingsNumber
-				+ ", coatThickness=" + coatThickness + ", height=" + height
-				+ ", weight=" + weight + ", metabolism=" + metabolism
-				+ ", cooperationFlag=" + cooperationFlag + ", offspringCount="
-				+ offspringCount + "]";
+		return "eyes number = " + eyesNumber +
+				"\nears number = " + earsNumber +
+				"\nlegs number = " + legsNumber +
+				"\nfins number = "	+ finsNumber +
+				"\nwings number = " + wingsNumber +
+				"\ncoat thickness = " + coatThickness + " cm" +
+				"\nheight = " + (double)Math.round(height*100)/100 + " m" +
+				"\nweight = " + weight + " kg" +
+				"\nmetabolism = " + metabolism + " kCal per day" +
+				"\ncooperates with others = " + cooperationFlag +
+				"\noffspring count = " + offspringCount;
 	}
 
 	/* (non-Javadoc)
