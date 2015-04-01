@@ -20,7 +20,7 @@ import cs580.evolution.pojo.Genome;
  * @author Ashwin Hole
  * @author Divya Kondaviti
  * @author Ankith Raj
- * @author Manjusha
+ * @author Manjusha Upadhye
  *
  */
 public class CreatureEvolution {
@@ -38,6 +38,9 @@ public class CreatureEvolution {
 		//TODO after progress check: save randomly generated population to a file so it's possible to re-use it later
 		
 		//TODO after progress check: set environmental characteristics from input args
+		/*
+		 * initial livable environment
+		 */
 		Environment initEnvironment = new Environment();
 		
 		//TODO now just one input argument - number of generations; will add the rest and validation later
@@ -69,9 +72,17 @@ public class CreatureEvolution {
 		Reproduce reproduce = new Reproduce();
 		Mutation mutation = new Mutation();
 		//TODO instantiate selection function
+		double tmp;	//to calculate log10 for generation number output
 		
 		//outer loop: one iteration = one generation
 		for (int generationCount = 1; generationCount <= generationsNumber; generationCount++) {
+			/*
+			 * Output generation number - log10 scale
+			 */
+			tmp = Math.log10(generationCount);
+			if (tmp == (int)tmp || generationCount == generationsNumber)
+				System.out.println("Generation " + generationCount);
+			
 			newPopulation = new ArrayList<Genome>();
 			
 			/*
