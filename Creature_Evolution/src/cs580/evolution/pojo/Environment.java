@@ -139,10 +139,11 @@ public class Environment {
 	 */
 	@Override
 	public String toString() {
-		return "Environment [lightLevel=" + lightLevel + ", temperature="
-				+ temperature + ", humidityLevel=" + humidityLevel
-				+ ", pollutionLevel=" + pollutionLevel + ", foodTotalAmount="
-				+ foodTotalAmount + "]";
+		return "light level = " + lightLevel + "%" +
+				"\ntemperature = " + temperature + "C" +
+				"\nhumidity level = " + humidityLevel + "%" +
+				"\npollution level = " + pollutionLevel + "%" +
+				"\ntotal food amount = " + foodTotalAmount + " kCal";
 	}
 
 	/* (non-Javadoc)
