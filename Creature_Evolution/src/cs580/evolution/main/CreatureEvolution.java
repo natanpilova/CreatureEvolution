@@ -47,11 +47,10 @@ public class CreatureEvolution {
 		if (args.length > 0) {
 			int generationsNumber = Integer.parseInt(args[0]);
 			Entry<Integer, Genome> winner = geneticAlgoritm(initPopulation, initEnvironment, generationsNumber);
-			System.out.println("WINNER:");	
-			System.out.println("individual with genome:");
+			System.out.println("*********** WINNER ***********");	
+			System.out.println("Individual with genome:");
 			System.out.println(winner.getValue().toString());
-			System.out.println("fitness level:");
-			System.out.println(winner.getKey());
+			System.out.println("Fitness level: " + winner.getKey());
 		} else
 			System.err.println("Invalid number of input arguments");
 	}
