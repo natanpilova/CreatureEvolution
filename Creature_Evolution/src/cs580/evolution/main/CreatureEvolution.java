@@ -35,7 +35,7 @@ public class CreatureEvolution {
 		/*
 		 * generating random initial population
 		 */
-		List<Genome> initPopulation = generateRandomPopulation(101);	//arbitrary number of individuals - TODO input arg
+		List<Genome> initPopulation = generateRandomPopulation(1001);	//arbitrary number of individuals - TODO input arg
 		//TODO after progress check: save randomly generated population to a file so it's possible to re-use it later
 		
 		//TODO after progress check: set environmental characteristics from input args
@@ -48,10 +48,14 @@ public class CreatureEvolution {
 		if (args.length > 0) {
 			int generationsNumber = Integer.parseInt(args[0]);
 			Entry<Integer, Genome> winner = geneticAlgoritm(initPopulation, initEnvironment, generationsNumber);
-			System.out.println("\n*********** WINNER ***********");	
-			System.out.println("Individual with genome:");
-			System.out.println(winner.getValue().toString());
-			System.out.println("Fitness level: " + winner.getKey());
+			if (winner == null)
+				System.out.println("\n*** NO WINNER ***");
+			else {
+				System.out.println("\n*********** WINNER ***********");	
+				System.out.println("Individual with genome:");
+				System.out.println(winner.getValue().toString());
+				System.out.println("Fitness level: " + winner.getKey());
+			}
 		} else
 			System.err.println("Invalid number of input arguments");
 	}
@@ -76,6 +80,8 @@ public class CreatureEvolution {
 		Selection selection = new Selection();
 		double tmp;	//to calculate log10 for generation number output
 		
+		System.out.println("Initial population size = " + population.size());
+		
 		System.out.println("\nInitial environment:");
 		System.out.println(environment.toString());
 		System.out.println();
@@ -90,7 +96,6 @@ public class CreatureEvolution {
 			tmp = Math.log10(generationCount);
 			if (tmp == (int)tmp || generationCount == generationsNumber)
 				System.out.println("Generation " + generationCount);
-			System.out.println("generation "+generationCount+" population size "+population.size());///
 			newPopulation = new ArrayList<Genome>();
 			
 			/*
@@ -99,7 +104,15 @@ public class CreatureEvolution {
 			//System.out.print("culling...");
 			parentsPool = selection.cullPopulation(population, environment);
 			//System.out.println("...done.");
-			System.out.println("culled population size " + parentsPool.size());
+			System.out.println("** generation "+generationCount+" culled population size " + parentsPool.size());
+			if (parentsPool.isEmpty() || parentsPool.size() < 2) {
+				System.out.println("WARNING: Not enough (" + parentsPool.size() + ") individuals in the parents pool");
+				System.out.println("Final population size = " + population.size());
+				System.out.println("\nFinal environment:");
+				System.out.println(environment.toString());
+				return null;
+			}
+			
 			/*
 			 * inner loop: generating offspring as new population
 			 */
@@ -108,9 +121,9 @@ public class CreatureEvolution {
 				/*
 				 * parents selection
 				 */
-				System.out.print("selection parents (culled pop size "+parentsPool.size()+") for child "+i+"...");
+				//System.out.print("selection parents (culled pop size "+parentsPool.size()+") for child "+i+"...");
 				parents = selection.getParents(parentsPool, environment);
-				System.out.println("...done.");
+				//System.out.println("...done.");
 				mom = parents.get(0);
 				dad = parents.get(1);
 				
@@ -143,7 +156,8 @@ public class CreatureEvolution {
 			environment = envGenerator.EG(environment, generationCount);
 		}
 		
-		System.out.println("\nCurrent environment:");
+		System.out.println("Final population size = " + population.size());
+		System.out.println("\nFinal environment:");
 		System.out.println(environment.toString());
 		
 		//select individual with max fitness level

@@ -23,38 +23,48 @@ public class Selection {
 	
 	/**
 	 * Selects parents from culled population
-	 * @param popMap culled population with fitness levels
+	 * @param popMap parents pool: culled population with fitness levels
 	 * @param env current environment
 	 * @return list of two parents: first mom, second dad
 	 */
 	public List<Genome> getParents(TreeMap<Integer, Genome> popMap, Environment envmt) {
-		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>(popMap);
-		//to store 2 parents: first mom, second dad
-		ArrayList<Genome> parents = new ArrayList<Genome>();
-		
 		//TODO after progress check:
-		// 1) optimize for speed and resources
-		// 2) increase the probability of individuals with higher fitness to be selected
-		// 3) account for the max offspring number: individual with max possible offspring count cannot be selected anymore
+		// 1) increase the probability of individuals with higher fitness to be selected
+		// 2) account for the max offspring number: individual with max possible offspring count cannot be selected anymore
 		
-		//selecting parents randomly from the culled population
-		Random rand = new Random();
+		//to store 2 parents: first mom, second dad
+		List<Genome> parents =  new ArrayList<Genome>();
+		
+		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>(popMap);
 		Genome mom, dad;
-		Integer lastKey = popuMap.lastKey();
-		Integer randomKey = rand.nextInt(lastKey);
-		while (!popuMap.containsKey(randomKey)) {
-			randomKey = rand.nextInt(lastKey);
-		}
-		mom = popuMap.remove(randomKey);	//get and remove mom from map
-		parents.add(mom);					//added mom to parents list
 		
-		lastKey = popuMap.lastKey();		//need to get new last key to avoid having null value for dad
-		randomKey = rand.nextInt(lastKey);
-		while (!popuMap.containsKey(randomKey)) {
+		//if just two individuals in the parents pool then no need to select parents, just use these two
+		if (popuMap.size() == 2) {
+			//parents = (List<Genome>) popuMap.values();//FIX
+			mom = popuMap.pollFirstEntry().getValue();
+			dad = popuMap.pollLastEntry().getValue();
+		} else {
+			//selecting parents randomly from the culled population
+			Random rand = new Random();
+			Integer lastKey = popuMap.lastKey();
+			Integer randomKey = rand.nextInt(lastKey);
+			while (!popuMap.containsKey(randomKey)) {
+				randomKey = rand.nextInt(lastKey);
+			}
+			mom = popuMap.remove(randomKey);	//get and remove mom from map
+			
+			lastKey = popuMap.lastKey();		//need to get new last key to avoid having null value for dad
 			randomKey = rand.nextInt(lastKey);
+			while (!popuMap.containsKey(randomKey)) {
+				randomKey = rand.nextInt(lastKey);
+			}
+			dad = popuMap.get(randomKey);	//get dad
+			
 		}
-		dad = popuMap.get(randomKey);	//get dad
-		parents.add(dad);				//added dad to parents list
+		
+		//added mom and dad to parents list
+		parents.add(mom);
+		parents.add(dad);
 		
 		return parents;
 	}
@@ -69,7 +79,8 @@ public class Selection {
 	public TreeMap<Integer, Genome> cullPopulation(List<Genome> population, Environment envmt) {
 		//calculate fitness levels for population
 		TreeMap<Integer, Genome> popuMap = fit.calculatePopulationFitness(population, envmt);
-
+		
+		//FIX
 		//keep roughly 50% most fit individuals
 		Integer[] arrInt = popuMap.keySet().toArray(new Integer[0]);
 		int halfSize = arrInt.length/2;
