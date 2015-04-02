@@ -5,7 +5,6 @@ package cs580.evolution.function;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
 
@@ -15,7 +14,7 @@ import cs580.evolution.pojo.Genome;
 /**
  * 
  * @author Manjusha Upadhye
- *
+ * edited by Natalia Anpilova
  */
 
 public class Selection {
@@ -24,22 +23,14 @@ public class Selection {
 	
 	/**
 	 * Selects parents from culled population
-	 * @param population culled population
+	 * @param popMap culled population with fitness levels
 	 * @param env current environment
 	 * @return list of two parents: first mom, second dad
 	 */
-	public List<Genome> getParents(List<Genome> population, Environment envmt) {
+	public List<Genome> getParents(TreeMap<Integer, Genome> popMap, Environment envmt) {
+		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>(popMap);
 		//to store 2 parents: first mom, second dad
 		ArrayList<Genome> parents = new ArrayList<Genome>();
-		
-		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>();	//to store calculated fitness levels for culled population
-		int fitLevel;
-		
-		//calculate fitness for population and add to the map
-		for (Genome gen : population) {
-			fitLevel = fit.getFitnessLevel(gen, envmt);
-			popuMap.put(fitLevel, gen);
-		}
 		
 		//TODO after progress check:
 		// 1) optimize for speed and resources
@@ -72,28 +63,22 @@ public class Selection {
 	 * Culls population: discards 50% least fit individuals from it
 	 * @param population original population
 	 * @param envmt current environment
-	 * @return culled population (50% of original population size)
+	 * @return culled population (50% of original population size) - 
+	 * tree map where key is fitness level, value is genome; map is sorted by fitness level in ascending order
 	 */
-	public List<Genome> cullPopulation(List<Genome> population, Environment envmt) {
-		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>();	//to store calculated fitness levels for population
-		List<Genome> culledPopulation = new ArrayList<Genome>();			//to store 50% most fit individuals
-		int fitLevel;
+	public TreeMap<Integer, Genome> cullPopulation(List<Genome> population, Environment envmt) {
+		//calculate fitness levels for population
+		TreeMap<Integer, Genome> popuMap = fit.calculatePopulationFitness(population, envmt);
+
+		//keep roughly 50% most fit individuals
+		Integer[] arrInt = popuMap.keySet().toArray(new Integer[0]);
+		int halfSize = arrInt.length/2;
+		Integer fromKey = arrInt[halfSize];
 		
-		//calculate fitness for population and add to the map; map by default will be sorted by fitness level in ascending order
-		for (Genome gen : population) {
-			fitLevel = fit.getFitnessLevel(gen, envmt);
-			popuMap.put(fitLevel, gen);
-		}
-		
-		//keep 50% most fit individuals
-		int halfSize = popuMap.size()/2;
-		int i = 1;
-		for (Entry<Integer, Genome> entry : popuMap.entrySet()) {
-			if (i > halfSize)
-				culledPopulation.add(entry.getValue());
-			i++;
-		}
-		return culledPopulation;
+		//get greater half
+		TreeMap<Integer, Genome> culledMap = new TreeMap<Integer, Genome>(popuMap.tailMap(fromKey, false));
+
+		return culledMap;
 	}
 		
 }

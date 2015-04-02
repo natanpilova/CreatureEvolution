@@ -30,12 +30,12 @@ public class CreatureEvolution {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//TODO after progress check: add choice from input args: read population from file or generate random
+		//TODO after progress check: add choice from input args: read population from file or generate random; verbose flag
 		//List<Genome> initPopulation = new ArrayList<Genome>();
 		/*
 		 * generating random initial population
 		 */
-		List<Genome> initPopulation = generateRandomPopulation(100);	//arbitrary number of individuals
+		List<Genome> initPopulation = generateRandomPopulation(101);	//arbitrary number of individuals - TODO input arg
 		//TODO after progress check: save randomly generated population to a file so it's possible to re-use it later
 		
 		//TODO after progress check: set environmental characteristics from input args
@@ -64,10 +64,10 @@ public class CreatureEvolution {
 	 * @return winner's genome
 	 */
 	public static Entry<Integer, Genome> geneticAlgoritm(List<Genome> initPopulation, Environment initEnvironment, int generationsNumber) {
-		List<Genome> population = initPopulation;	//current whole population
-		List<Genome> parentsPool = null;			//potential parents (population after discarding individuals with low fitness
-		List<Genome> parents = null;				//actual parents list
-		List<Genome> newPopulation = null;			//offspring
+		List<Genome> population = initPopulation;		//current whole population
+		TreeMap<Integer, Genome> parentsPool = null;	//potential parents - population (with fitness levels) after discarding individuals with low fitness
+		List<Genome> parents = null;					//actual parents list
+		List<Genome> newPopulation = null;				//offspring
 		Genome mom, dad, child;
 		Environment environment = initEnvironment;
 		EnviGen envGenerator = new EnviGen();
@@ -75,6 +75,10 @@ public class CreatureEvolution {
 		Mutation mutation = new Mutation();
 		Selection selection = new Selection();
 		double tmp;	//to calculate log10 for generation number output
+		
+		System.out.println("\nInitial environment:");
+		System.out.println(environment.toString());
+		System.out.println();
 		
 		/*
 		 * outer loop: one iteration = one generation
@@ -86,14 +90,16 @@ public class CreatureEvolution {
 			tmp = Math.log10(generationCount);
 			if (tmp == (int)tmp || generationCount == generationsNumber)
 				System.out.println("Generation " + generationCount);
-			
+			System.out.println("generation "+generationCount+" population size "+population.size());///
 			newPopulation = new ArrayList<Genome>();
 			
 			/*
 			 * potential parents pre-selection based on the fitness level
 			 */
+			//System.out.print("culling...");
 			parentsPool = selection.cullPopulation(population, environment);
-			
+			//System.out.println("...done.");
+			System.out.println("culled population size " + parentsPool.size());
 			/*
 			 * inner loop: generating offspring as new population
 			 */
@@ -102,11 +108,11 @@ public class CreatureEvolution {
 				/*
 				 * parents selection
 				 */
+				System.out.print("selection parents (culled pop size "+parentsPool.size()+") for child "+i+"...");
 				parents = selection.getParents(parentsPool, environment);
+				System.out.println("...done.");
 				mom = parents.get(0);
 				dad = parents.get(1);
-				/*mom = population.get(0);
-				dad = population.get(1);*/
 				
 				/*
 				 * reproduce
@@ -164,18 +170,12 @@ public class CreatureEvolution {
 	 * Determines the winner individual - the genome with the highest fitness level
 	 * @param population
 	 * @param envmt environment
-	 * @return the <fitnessLevel, Genome> entry with the highest fitness level
+	 * @return the <fitnessLevel, Genome> map entry with the highest fitness level
 	 */
 	private static Entry<Integer, Genome> getWinner(List<Genome> population, Environment envmt) {
-		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>();	//to store calculated fitness levels for population
+		//calculate fitness levels for population
 		Fitness fit = new Fitness();
-		int fitLevel;
-		
-		//calculate fitness for population and add to the map
-		for (Genome gen : population) {
-			fitLevel = fit.getFitnessLevel(gen, envmt);
-			popuMap.put(fitLevel, gen);
-		}
+		TreeMap<Integer, Genome> popuMap = fit.calculatePopulationFitness(population, envmt);
 		
 		//the <fitnessLevel, Genome> entry with the highest fitness level
 		return popuMap.lastEntry();
