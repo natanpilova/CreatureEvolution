@@ -42,7 +42,8 @@ public class CreatureEvolution {
 		/*
 		 * generating random initial population
 		 */
-		List<Genome> initPopulation = generateRandomPopulation(1001);	//arbitrary number of individuals - TODO input arg
+		//TODO (REQUIRED - Natalia): arbitrary number of individuals - from input arg
+		List<Genome> initPopulation = generateRandomPopulation(1001); //number of individuals
 		
 		/*
 		 * initial livable environment
