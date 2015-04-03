@@ -13,8 +13,7 @@ import cs580.evolution.pojo.Genome;
 
 /**
  * 
- * @author Manjusha Upadhye
- * edited by Natalia Anpilova
+ * @author Manjusha Upadhye, Natalia Anpilova
  */
 
 public class Selection {
@@ -28,9 +27,8 @@ public class Selection {
 	 * @return list of two parents: first mom, second dad
 	 */
 	public List<Genome> getParents(TreeMap<Integer, Genome> popMap, Environment envmt) {
-		//TODO after progress check:
-		// 1) increase the probability of individuals with higher fitness to be selected
-		// 2) account for the max offspring number: individual with max possible offspring count cannot be selected anymore
+		//TODO (optional - Natalia): increase the probability of individuals with higher fitness to be selected
+		//TODO (REQUIRED - Natalia): account for the max offspring number: individual with max possible offspring count cannot be selected anymore
 		
 		//to store 2 parents: first mom, second dad
 		List<Genome> parents =  new ArrayList<Genome>();
@@ -40,7 +38,6 @@ public class Selection {
 		
 		//if just two individuals in the parents pool then no need to select parents, just use these two
 		if (popuMap.size() == 2) {
-			//parents = (List<Genome>) popuMap.values();//FIX
 			mom = popuMap.pollFirstEntry().getValue();
 			dad = popuMap.pollLastEntry().getValue();
 		} else {
@@ -80,7 +77,7 @@ public class Selection {
 		//calculate fitness levels for population
 		TreeMap<Integer, Genome> popuMap = fit.calculatePopulationFitness(population, envmt);
 		
-		//FIX
+		//TODO (REQUIRED - Natalia) - use list instead of set, and/or calculate half size NOT from the set; output orig. and set values to check
 		//keep roughly 50% most fit individuals
 		Integer[] arrInt = popuMap.keySet().toArray(new Integer[0]);
 		int halfSize = arrInt.length/2;

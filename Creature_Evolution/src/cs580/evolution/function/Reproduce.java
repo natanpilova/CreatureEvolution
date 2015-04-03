@@ -12,6 +12,14 @@ import cs580.evolution.pojo.Genome;
  */
 public class Reproduce {
 
+	//TODO (REQUIRED - Ashwin): check if the resulting child has realistic genome:
+	//adjust metabolism with weight, height and other genes like -
+	//if number of eyes/wings/ears/legs/fins/height/weight increased, metabolism should be higher, if decreased - lower (having all these extra things need more energy!),
+	//if height is big then the weight cannot be too small, and vice versa.
+	//This is to rule out unlikely situations like height is 10cm and weight is 1 ton, and this creature eats only 1kCal per day. Impossible, right?
+	//Best is to add one more private method returning boolean value - say, sanityCheck(Genome kid) for this check, and call it on the kid at the end of produceChild();
+	//if didn't pass (returns false) then produce another child instead - so loop like "while (!sanityCheck(kid) {....}" is needed
+	
 	/**
 	 * Reproduce function
 	 * @param mom

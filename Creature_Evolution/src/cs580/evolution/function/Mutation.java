@@ -10,6 +10,10 @@ import cs580.evolution.pojo.Genome;
  *
  */
 public class Mutation {
+	//TODO (optional - Divya): add some additional small value if current environment's pollution exceeds mutation threshold, like:
+	//if (env.getPollutionLevel => Envoronment.POLLUTION_MUTATION_THRESHOLD {calculate some tiny value to add to returning number}
+	//Remember that the result should be less than 1
+	//Also, mutationProbability() will need to have current Environment as an argument
 	
 	public double mutationProbability()
 	{

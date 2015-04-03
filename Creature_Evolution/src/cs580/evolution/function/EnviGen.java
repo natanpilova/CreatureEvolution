@@ -8,8 +8,11 @@ import cs580.evolution.pojo.Environment;
  */
 
 public class EnviGen {
-		
-		int tmax=0;					    	// If there is a calamity. Initially none
+		//TODO (optional - Ankith): replace some of the hard-coded here values (number of generations for calamity and ice age)
+		//with environmental characteristics from input args - coordinate with Natalia (if she implements these input args)
+		//If we do this then best is to add them as instance variables and pass in via constructor in here
+	
+		int tmax=0;					   	// If there is a calamity. Initially none
 		int direction = 1;				// Direction of the sine wave. 1: Increase, 0: Decrease. Initially increase
 		
 		int new_lightLevel;											
@@ -100,8 +103,8 @@ public class EnviGen {
 					
 					if(new_temperature < -115)
 					{
-						new_temperature = new_temperature + 5;			// Temperature increase from Ice age is a lot faster
-						new_lightLevel = Environment.MIN_LIGHT_LEVEL;				// Total darkness
+						new_temperature = new_temperature + 5;					// Temperature increase from Ice age is a lot faster
+						new_lightLevel = Environment.MIN_LIGHT_LEVEL;			// Total darkness
 						new_pollutionLevel = Environment.MIN_POLLUTION_LEVEL;
 						new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;
 						continue;
@@ -118,20 +121,20 @@ public class EnviGen {
 					new_temperature = new_temperature - 1;				// Temperature decreases by 1 for each generation
 					}
 					
-					
+					//TODO (optional - Ankith): this is a linear "zig-zag" dependency which is fine; but if you want real sin then use it instead
 					// A temperature shift in the form of a sine wave 
 					if(new_temperature == 185)							// Temperature upper boundary for other factors to exist
 					{
-						direction = 0;								      	// Value starts to decrease after reaching maxima
+						direction = 0;								    // Value starts to decrease after reaching maxima
 					}
 					
 					if(new_temperature == -115)							//  Temperature lower boundary for other factors to exist
 					{
-						direction = 1;							      		// Value starts to increase after reaching minima
+						direction = 1;							      	// Value starts to increase after reaching minima
 					}
 					
-					new_lightLevel = (new_temperature + 115) / 3;								                    		//Light based on temperature
-					new_pollutionLevel = (new_temperature + 115) / 3; 					                				//Pollution based on temperature
+					new_lightLevel = (new_temperature + 115) / 3;								        //Light based on temperature
+					new_pollutionLevel = (new_temperature + 115) / 3; 					                //Pollution based on temperature
 					new_foodTotalAmount = 1000000000 - (Math.abs(new_temperature-35)*(1000000000/150)); // food is peak at 35C, reduces with increase/decrease
 													
 				}
@@ -153,18 +156,18 @@ public class EnviGen {
 			public void iceage()
 			{
 				new_temperature = Environment.MIN_TEMPERATURE_LEVEL;			// Ice age is generally followed the successive year of natural calamities (Nuclear Winter)
-				new_lightLevel = Environment.MIN_LIGHT_LEVEL;				    	// Total darkness
+				new_lightLevel = Environment.MIN_LIGHT_LEVEL;				   	// Total darkness
 				new_pollutionLevel = Environment.MIN_POLLUTION_LEVEL;			// Lower the temperature, lower the pollution
 				new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;				// There would be no food at this temperature
 				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No water
-				tmax=0;											                	// Calamity ends
+				tmax=0;											                // Calamity ends
 			}
 			
 			public void calamity()
 			{
 				new_temperature = Environment.MAX_TEMPERATURE_LEVEL;			// Highest Temperature
-				tmax=1;											                	// Indication that the temperature is at a max (calamity)
-				new_lightLevel = Environment.MAX_LIGHT_LEVEL;				    	// Higher the Temperature, greater will be the light
+				tmax=1;											                // Indication that the temperature is at a max (calamity)
+				new_lightLevel = Environment.MAX_LIGHT_LEVEL;				    // Higher the Temperature, greater will be the light
 				new_pollutionLevel = Environment.MAX_POLLUTION_LEVEL;			// Higher the temperature, higher the pollution
 				new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;				// There would be no food at this temperature
 				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No Water

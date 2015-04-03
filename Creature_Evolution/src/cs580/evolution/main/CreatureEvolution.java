@@ -30,21 +30,25 @@ public class CreatureEvolution {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//TODO after progress check: add choice from input args: read population from file or generate random; verbose flag
+		//TODO (REQUIRED - Natalia): add choice from input args: read population from file or generate random
+		//TODO (optional - Natalia): verbose flag as additional input argument
+		//TODO (optional - Natalia): input arguments validation (can skip since we will know what values to plug in for demo)
+		//TODO (REQUIRED - Natalia): save randomly generated population to a file so it's possible to re-use it later
+		//TODO (optional - Natalia): set environmental characteristics from input args, add whatever other input args can be handy
+		//TODO (optional - Natalia): use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
+		//TODO (REQUIRED - Natalia): output best-fit genome from initial population
+		
 		//List<Genome> initPopulation = new ArrayList<Genome>();
 		/*
 		 * generating random initial population
 		 */
 		List<Genome> initPopulation = generateRandomPopulation(1001);	//arbitrary number of individuals - TODO input arg
-		//TODO after progress check: save randomly generated population to a file so it's possible to re-use it later
 		
-		//TODO after progress check: set environmental characteristics from input args
 		/*
 		 * initial livable environment
 		 */
 		Environment initEnvironment = new Environment();
 		
-		//TODO now just one input argument - number of generations; will add the rest and validation later
 		if (args.length > 0) {
 			int generationsNumber = Integer.parseInt(args[0]);
 			Entry<Integer, Genome> winner = geneticAlgoritm(initPopulation, initEnvironment, generationsNumber);
@@ -116,7 +120,7 @@ public class CreatureEvolution {
 			/*
 			 * inner loop: generating offspring as new population
 			 */
-			//TODO maybe: instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
+			//TODO (optional - Natalia): instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
 			for (int i = 0; i < population.size(); i++) {
 				/*
 				 * parents selection
@@ -130,15 +134,15 @@ public class CreatureEvolution {
 				/*
 				 * reproduce
 				 */
-				//TODO after progress check: adjust metabolism with weight, height and other genes. Also account for unlikely situations like height is 10cm and weight is 1 ton. -Natalia
 				child = reproduce.produceChild(mom, dad);
-				//TODO add offspring count back to corresponding genomes in parentsPool 
+				//TODO (REQUIRED - Natalia): add offspring count back to corresponding genomes in parentsPool 
 				mom.addOffspring(1);
 				dad.addOffspring(1);
 				
 				/*
 				 * mutate
 				 */
+				//TODO (optional - Natalia): if Divya adds pollution in mutationProbability(), replace with mutationProbability(environment)
 				if (mutation.mutationProbability() > 0.99)
 					child = Mutation.mutate(child);
 				
@@ -163,7 +167,6 @@ public class CreatureEvolution {
 		//select individual with max fitness level
 		Entry<Integer, Genome> winner = getWinner(population, environment);
 		
-		//TODO after progress check: use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
 		return winner;
 	}
 	

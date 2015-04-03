@@ -25,7 +25,7 @@ public class Fitness {
 	 */
 	public int getFitnessLevel(Genome ind, Environment env) {
 		double fitnessLevel = 0;
-		//TODO refine the calculations based on combination of environmental parameters
+		//TODO (optional - Natalia): refine the calculations based on combination of environmental parameters
 		
 		//if there's light around, more eyes the better
 		if (env.getLightLevel() > Environment.MIN_LIGHT_LEVEL)
@@ -62,7 +62,7 @@ public class Fitness {
 			fitnessLevel += 10;
 		
 		//high pollution lowers the fitness level
-		if (env.getPollutionLevel() > Environment.POLLUTION_MUTATION_THRESHHOLD)
+		if (env.getPollutionLevel() > Environment.POLLUTION_MUTATION_THRESHOLD)
 			fitnessLevel -= Math.log1p(env.getPollutionLevel());
 		
 		return (int) Math.round(fitnessLevel);
