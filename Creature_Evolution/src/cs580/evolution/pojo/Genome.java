@@ -115,6 +115,7 @@ public class Genome implements Comparable {
 		Genome randomGenome = new Genome();
 		Random rand = new Random(); 
 		
+		//TODO (Natalia - REQUIRED): add sanity check
 		int randomInt = rand.nextInt(MAX_EYES_NUMBER+1);
 		if (randomInt < MIN_EYES_NUMBER)
 			randomInt = MIN_EYES_NUMBER;
