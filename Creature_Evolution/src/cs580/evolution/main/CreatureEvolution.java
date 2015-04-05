@@ -5,6 +5,7 @@ package cs580.evolution.main;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import cs580.evolution.function.EnviGen;
@@ -33,14 +34,24 @@ public class CreatureEvolution {
 		//TODO (optional - Natalia): verbose flag as additional input argument
 		//TODO (optional - Natalia): input arguments validation (can skip since we will know what values to plug in for demo)
 		//TODO (REQUIRED - Natalia): save randomly generated population to a file so it's possible to re-use it later
+		//TODO (REQUIRED - Natalia): direct output to log file in addition to system output
 		//TODO (optional - Natalia): set environmental characteristics from input args, add whatever other input args can be handy
-		//TODO (optional - Natalia): use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
+		//TODO (optional - Natalia): use some existing or new method in parent selection class to calculate prevalence of offspring - at least calculate potential offspring count for winners
 		
 		if (args.length > 1) {
-			int generationsNumber = Integer.parseInt(args[0]);
-			int populationSize = Integer.parseInt(args[1]);
-			
+			int populationSize = Integer.parseInt(args[0]);
+			int generationsNumber = Integer.parseInt(args[1]);
 			//List<Genome> initPopulation = new ArrayList<Genome>();
+			
+			if (populationSize <= 0) {
+				System.err.println("Invalid population size. Please enter number greater than 0");
+				System.exit(0);
+			}
+			if (generationsNumber <= 0) {
+				System.err.println("Invalid number of generations. Please enter number greater than 0");
+				System.exit(0);
+			}
+			
 			/*
 			 * generating random initial population
 			 */
@@ -62,13 +73,13 @@ public class CreatureEvolution {
 				System.out.println("\n*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");	
 				int i = 1;
 				for (Genome winner : winners) {
-					System.out.println("\n" + i + ". Individual with genome:");
+					System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Individual with genome:");
 					System.out.println(winner.toString());
 					i++;
 				}
 			}
 		} else
-			System.err.println("Invalid number of input arguments. Please enter <number of generations> <population size>");
+			System.err.println("Invalid number of input arguments. Please enter <population size> <number of generations>");
 	}
 
 	/**
@@ -92,8 +103,8 @@ public class CreatureEvolution {
 		List<Genome> winners;
 		double tmp;	//to calculate log10 for generation number output
 		
-		System.out.println("Number of generations to create = " + generationsNumber);
 		System.out.println("Initial population size = " + population.size());
+		System.out.println("Number of generations to create = " + generationsNumber);
 		
 		System.out.println("\nInitial environment:");
 		System.out.println(environment.toString());
@@ -105,7 +116,7 @@ public class CreatureEvolution {
 			System.out.println("\n*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");	
 			int i = 1;
 			for (Genome winner : winners) {
-				System.out.println("\n" + (winners.size() == 1 ? i+". " : "") + "Individual with genome:");
+				System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Individual with genome:");
 				System.out.println(winner.toString());
 				i++;
 			}
@@ -131,17 +142,16 @@ public class CreatureEvolution {
 			//System.out.print("culling...");
 			parentsPool = selection.cullPopulation(population, environment);
 			//System.out.println("...done.");
-			System.out.println("** generation "+generationCount+" culled population size " + parentsPool.size());
+			//System.out.println("** generation "+generationCount+" culled population size " + parentsPool.size());
 			
 			/*
 			 * inner loop: generating offspring as new population
 			 */
 			//TODO (optional - Natalia): instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
 			for (int i = 0; i < population.size(); i++) {
-				
 				//if less than two potential parents, then offspring cannot be generated
 				if (parentsPool.isEmpty() || parentsPool.size() < 2) {
-					System.out.println("WARNING: Not enough (" + parentsPool.size() + " while min number is 2) individuals in the parents pool");
+					System.out.println("WARNING: Not enough individuals in the parents pool: actual number is " + parentsPool.size() + ", min allowed number is 2");
 					System.out.println("Final population size = " + population.size());
 					System.out.println("\nFinal environment:");
 					System.out.println(environment.toString());
@@ -171,11 +181,9 @@ public class CreatureEvolution {
 				child = reproduce.produceChild(mom, dad);
 				mom.addOffspring(1);
 				dad.addOffspring(1);
-				//System.out.println("Mom's offspring count AFTER = "+mom.getOffspringCount());///
-				//System.out.println("Dad's offspring count AFTER = "+dad.getOffspringCount());
 				
 				//remove individuals with max possible number of offspring from parents pool
-				parentsPool.removeIf(p -> p.getOffspringCount() == Genome.MAX_OFFSPRING_COUNT);
+				parentsPool.removeIf(p -> (p.getOffspringCount() == Genome.MAX_OFFSPRING_COUNT));
 				
 				/*
 				 * mutate
@@ -229,6 +237,9 @@ public class CreatureEvolution {
 	 */
 	@SuppressWarnings("unchecked")
 	private static List<Genome> getWinners(List<Genome> population, Environment envmt) {
+		if (population.isEmpty() || population == null)
+			return population;
+		
 		//calculate fitness levels for population
 		Fitness fit = new Fitness();
 		population = fit.calculatePopulationFitness(population, envmt);
@@ -245,6 +256,8 @@ public class CreatureEvolution {
 				winners.add(gen);
 		}
 		
+		//get rid of duplicate genomes from the winners list so we have distinct genomes in output
+		winners = new ArrayList<Genome> (new HashSet<Genome>(winners));
 		return winners;
 	}
 }
