@@ -35,8 +35,6 @@ public class Reproduce {
 		int[] childarray = new int[8];
 		double h;
 		boolean coop;
-		//int offspring;
-		
 		
 		momarray[0] = mom.getEyesNumber();
 		momarray[1] = mom.getEarsNumber();
@@ -65,8 +63,6 @@ public class Reproduce {
 		for(int i=crossover;i<8;i++)
 		childarray[i] = dadarray[i];
 		
-		//offspring = mom.getOffspringCount();
-		
 		coop = dad.isCooperationFlag();
 		
 		
@@ -76,8 +72,7 @@ public class Reproduce {
 		h = dad.getHeight();
 		
 		Genome kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], childarray[6], childarray[7], h, coop);
-		//kid.setOffspringCount(offspring);
-		
+
 		
 		return kid;
 	}

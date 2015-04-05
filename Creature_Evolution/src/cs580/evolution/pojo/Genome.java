@@ -9,7 +9,8 @@ import java.util.Random;
  * @author Natalia Anpilova (will add all the team here)
  *
  */
-public class Genome {
+@SuppressWarnings("rawtypes")
+public class Genome implements Comparable {
 	/**
 	 * constants limiting min and max values for the variables
 	 */
@@ -57,6 +58,7 @@ public class Genome {
 	private double height;				//gene #9: height in meters
 	private boolean cooperationFlag;	//gene #10: true if cooperates with others, false if does not
 	private int offspringCount;			//number of offspring produced
+	private int fitness;				//fitness level
 	
 	/**
 	 * no-argument constructor
@@ -73,6 +75,7 @@ public class Genome {
 		this.metabolism = MIN_METABOLISM;
 		this.cooperationFlag = false;
 		this.offspringCount = 0;
+		this.fitness = 0;
 	}	
 	
 	/**
@@ -101,6 +104,7 @@ public class Genome {
 		this.height = height;
 		this.cooperationFlag = cooperationFlag;
 		this.offspringCount = 0;	//freshly created genome(creature) does not have offspring yet
+		this.fitness = 0;			//fitness level is calculated outside this class since it depends on environment
 	}
 	
 	/**
@@ -334,6 +338,20 @@ public class Genome {
 		this.offspringCount += offspringProduced;
 	}
 	
+	/**
+	 * @return the fitness
+	 */
+	public int getFitness() {
+		return fitness;
+	}
+
+	/**
+	 * @param fitness the fitness to set
+	 */
+	public void setFitness(int fitness) {
+		this.fitness = fitness;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -349,7 +367,8 @@ public class Genome {
 				"\nweight = " + weight + " kg" +
 				"\nmetabolism = " + metabolism + " kCal per day" +
 				"\ncooperates with others = " + cooperationFlag +
-				"\noffspring count = " + offspringCount;
+				"\noffspring count = " + offspringCount +
+				"\nFitness level = " + fitness;
 	}
 
 	/* (non-Javadoc)
@@ -411,6 +430,13 @@ public class Genome {
 		if (wingsNumber != other.wingsNumber)
 			return false;
 		return true;
+	}
+
+	@Override
+	public int compareTo(Object o) {
+		if (o.getClass().getName().equals(getClass().getName()))
+			return fitness - ((Genome) o).getFitness();
+		return 0;
 	}
 	
 }

@@ -10,7 +10,7 @@ import cs580.evolution.pojo.Environment;
 public class EnviGen {
 		//TODO (optional - Ankith): replace some of the hard-coded here values (number of generations for calamity and ice age)
 		//with environmental characteristics from input args - coordinate with Natalia (if she implements these input args)
-		//If we do this then best is to add them as instance variables and pass in via constructor in here
+		//If we do this then best is to add them as class instance variables and pass in via constructor in here
 	
 		int tmax=0;					   	// If there is a calamity. Initially none
 		int direction = 1;				// Direction of the sine wave. 1: Increase, 0: Decrease. Initially increase

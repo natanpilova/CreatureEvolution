@@ -4,9 +4,9 @@
 package cs580.evolution.function;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.TreeMap;
 
 import cs580.evolution.pojo.Environment;
 import cs580.evolution.pojo.Genome;
@@ -22,71 +22,82 @@ public class Selection {
 	
 	/**
 	 * Selects parents from culled population
-	 * @param popMap parents pool: culled population with fitness levels
+	 * @param parentsPool parents pool: culled population with fitness levels
 	 * @param env current environment
 	 * @return list of two parents: first mom, second dad
 	 */
-	public List<Genome> getParents(TreeMap<Integer, Genome> popMap, Environment envmt) {
+	public List<Genome> getParents(List<Genome> parentsPool, Environment envmt) {
 		//TODO (optional - Natalia): increase the probability of individuals with higher fitness to be selected
-		//TODO (REQUIRED - Natalia): account for the max offspring number: individual with max possible offspring count cannot be selected anymore
 		
 		//to store 2 parents: first mom, second dad
 		List<Genome> parents =  new ArrayList<Genome>();
-		
-		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>(popMap);
 		Genome mom, dad;
-		
+
 		//if just two individuals in the parents pool then no need to select parents, just use these two
-		if (popuMap.size() == 2) {
-			mom = popuMap.pollFirstEntry().getValue();
-			dad = popuMap.pollLastEntry().getValue();
+		if (parentsPool.size() == 2) {
+			mom = parentsPool.get(0);
+			dad = parentsPool.get(1);
 		} else {
 			//selecting parents randomly from the culled population
 			Random rand = new Random();
-			Integer lastKey = popuMap.lastKey();
-			Integer randomKey = rand.nextInt(lastKey);
-			while (!popuMap.containsKey(randomKey)) {
-				randomKey = rand.nextInt(lastKey);
-			}
-			mom = popuMap.remove(randomKey);	//get and remove mom from map
+			int index = rand.nextInt(parentsPool.size());
+			mom = parentsPool.remove(index);	//remove reference to mom from parents pool so mom cannot be picked again as a dad
 			
-			lastKey = popuMap.lastKey();		//need to get new last key to avoid having null value for dad
-			randomKey = rand.nextInt(lastKey);
-			while (!popuMap.containsKey(randomKey)) {
-				randomKey = rand.nextInt(lastKey);
-			}
-			dad = popuMap.get(randomKey);	//get dad
-			
+			index = rand.nextInt(parentsPool.size());
+			dad = parentsPool.get(index);
 		}
 		
 		//added mom and dad to parents list
 		parents.add(mom);
 		parents.add(dad);
+		//System.out.println("Mom's offspring count BEFORE = "+mom.getOffspringCount());///
+		//System.out.println("Dad's offspring count BEFORE = "+dad.getOffspringCount());
 		
 		return parents;
 	}
 	
 	/**
-	 * Culls population: discards 50% least fit individuals from it
+	 * Culls population: discards ~50% least fit individuals from it
 	 * @param population original population
 	 * @param envmt current environment
-	 * @return culled population (50% of original population size) - 
-	 * tree map where key is fitness level, value is genome; map is sorted by fitness level in ascending order
+	 * @return culled population (roughly half of original population size) 
 	 */
-	public TreeMap<Integer, Genome> cullPopulation(List<Genome> population, Environment envmt) {
-		//calculate fitness levels for population
-		TreeMap<Integer, Genome> popuMap = fit.calculatePopulationFitness(population, envmt);
+	@SuppressWarnings("unchecked")
+	public List<Genome> cullPopulation(List<Genome> population, Environment envmt) {
+		//calculate fitness levels for original population
+		List<Genome> origPopulation = new ArrayList<Genome>(population);
+		origPopulation = fit.calculatePopulationFitness(origPopulation, envmt);
 		
-		//TODO (REQUIRED - Natalia) - use list instead of set, and/or calculate half size NOT from the set; output orig. and set values to check
-		//keep roughly 50% most fit individuals
-		Integer[] arrInt = popuMap.keySet().toArray(new Integer[0]);
-		int halfSize = arrInt.length/2;
-		Integer fromKey = arrInt[halfSize];
+		//if two or less individuals in population, there's no culling
+		if (origPopulation.isEmpty() || origPopulation.size() <= 2)
+			return origPopulation;
 		
-		//get greater half
-		TreeMap<Integer, Genome> culledMap = new TreeMap<Integer, Genome>(popuMap.tailMap(fromKey, false));
+		List<Genome> culledPopulation = new ArrayList<Genome>();	//to store fitter individuals
+		
+		//sort original population by fitness level in asc order
+		Collections.sort(origPopulation);
+		
+		//dump fitness levels into array to calculate the fitness level threshold (median)
+		Integer[] arrInt = new Integer[origPopulation.size()];
+		int i = 0;
+		for (Genome gen : origPopulation) {
+			//System.out.println("fitness: "+gen.getFitness());///
+			arrInt[i] = gen.getFitness();
+			i++;
+		}
+		
+		//calculate fitness level threshold (median) - all individuals below this threshold will be discarded from parents pool
+		int half = (arrInt.length + 1)/2;
+		int fitTheshold = arrInt[half-1];
+		//System.out.println("MEDIAN: "+fitTheshold);///
+		
+		//populating the parents pool with fit enough individuals
+		for (Genome gen : origPopulation) {
+			if (gen.getFitness() >= fitTheshold)
+				culledPopulation.add(gen);
+		}
 
-		return culledMap;
+		return culledPopulation;
 	}
 		
 }

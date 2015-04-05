@@ -4,9 +4,8 @@
 package cs580.evolution.main;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import cs580.evolution.function.EnviGen;
 import cs580.evolution.function.Fitness;
@@ -36,45 +35,52 @@ public class CreatureEvolution {
 		//TODO (REQUIRED - Natalia): save randomly generated population to a file so it's possible to re-use it later
 		//TODO (optional - Natalia): set environmental characteristics from input args, add whatever other input args can be handy
 		//TODO (optional - Natalia): use some existing or new method in parent selection class to calculate prevalence of offspring (maybe)
-		//TODO (REQUIRED - Natalia): output best-fit genome from initial population
 		
-		//List<Genome> initPopulation = new ArrayList<Genome>();
-		/*
-		 * generating random initial population
-		 */
-		//TODO (REQUIRED - Natalia): arbitrary number of individuals - from input arg
-		List<Genome> initPopulation = generateRandomPopulation(1001); //number of individuals
-		
-		/*
-		 * initial livable environment
-		 */
-		Environment initEnvironment = new Environment();
-		
-		if (args.length > 0) {
+		if (args.length > 1) {
 			int generationsNumber = Integer.parseInt(args[0]);
-			Entry<Integer, Genome> winner = geneticAlgoritm(initPopulation, initEnvironment, generationsNumber);
-			if (winner == null)
+			int populationSize = Integer.parseInt(args[1]);
+			
+			//List<Genome> initPopulation = new ArrayList<Genome>();
+			/*
+			 * generating random initial population
+			 */
+			List<Genome> initPopulation = generateRandomPopulation(populationSize);
+			
+			/*
+			 * initial livable environment
+			 */
+			Environment initEnvironment = new Environment();
+			
+			/*
+			 * call genetic algorithm
+			 */
+			List<Genome> winners = geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
+			
+			if (winners.isEmpty())
 				System.out.println("\n*** NO WINNER ***");
 			else {
-				System.out.println("\n*********** WINNER ***********");	
-				System.out.println("Individual with genome:");
-				System.out.println(winner.getValue().toString());
-				System.out.println("Fitness level: " + winner.getKey());
+				System.out.println("\n*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");	
+				int i = 1;
+				for (Genome winner : winners) {
+					System.out.println("\n" + i + ". Individual with genome:");
+					System.out.println(winner.toString());
+					i++;
+				}
 			}
 		} else
-			System.err.println("Invalid number of input arguments");
+			System.err.println("Invalid number of input arguments. Please enter <number of generations> <population size>");
 	}
 
 	/**
 	 * Main logic
 	 * @param initPopulation
 	 * @param initEnvironment
-	 * @param generationsNumber
-	 * @return winner's genome
+	 * @param generationsNumber number of generations
+	 * @return winners' genomes
 	 */
-	public static Entry<Integer, Genome> geneticAlgoritm(List<Genome> initPopulation, Environment initEnvironment, int generationsNumber) {
+	public static List<Genome> geneticAlgorithm(List<Genome> initPopulation, Environment initEnvironment, int generationsNumber) {
 		List<Genome> population = initPopulation;		//current whole population
-		TreeMap<Integer, Genome> parentsPool = null;	//potential parents - population (with fitness levels) after discarding individuals with low fitness
+		List<Genome> parentsPool = null;				//potential parents - population (with fitness levels) after discarding individuals with low fitness
 		List<Genome> parents = null;					//actual parents list
 		List<Genome> newPopulation = null;				//offspring
 		Genome mom, dad, child;
@@ -83,16 +89,32 @@ public class CreatureEvolution {
 		Reproduce reproduce = new Reproduce();
 		Mutation mutation = new Mutation();
 		Selection selection = new Selection();
+		List<Genome> winners;
 		double tmp;	//to calculate log10 for generation number output
 		
+		System.out.println("Number of generations to create = " + generationsNumber);
 		System.out.println("Initial population size = " + population.size());
 		
 		System.out.println("\nInitial environment:");
 		System.out.println(environment.toString());
 		System.out.println();
 		
+		//output most fit individuals from initial population
+		winners = getWinners(population, environment);
+		if (!winners.isEmpty()) {
+			System.out.println("\n*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");	
+			int i = 1;
+			for (Genome winner : winners) {
+				System.out.println("\n" + (winners.size() == 1 ? i+". " : "") + "Individual with genome:");
+				System.out.println(winner.toString());
+				i++;
+			}
+		}
+		System.out.println();
+		
 		/*
 		 * outer loop: one iteration = one generation
+		 * stopping rule: required number of generations passed
 		 */
 		for (int generationCount = 1; generationCount <= generationsNumber; generationCount++) {
 			/*
@@ -110,19 +132,30 @@ public class CreatureEvolution {
 			parentsPool = selection.cullPopulation(population, environment);
 			//System.out.println("...done.");
 			System.out.println("** generation "+generationCount+" culled population size " + parentsPool.size());
-			if (parentsPool.isEmpty() || parentsPool.size() < 2) {
-				System.out.println("WARNING: Not enough (" + parentsPool.size() + ") individuals in the parents pool");
-				System.out.println("Final population size = " + population.size());
-				System.out.println("\nFinal environment:");
-				System.out.println(environment.toString());
-				return null;
-			}
 			
 			/*
 			 * inner loop: generating offspring as new population
 			 */
 			//TODO (optional - Natalia): instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
 			for (int i = 0; i < population.size(); i++) {
+				
+				//if less than two potential parents, then offspring cannot be generated
+				if (parentsPool.isEmpty() || parentsPool.size() < 2) {
+					System.out.println("WARNING: Not enough (" + parentsPool.size() + " while min number is 2) individuals in the parents pool");
+					System.out.println("Final population size = " + population.size());
+					System.out.println("\nFinal environment:");
+					System.out.println(environment.toString());
+					
+					//output the last generation number
+					if (tmp != (int)tmp && generationCount != generationsNumber)
+						System.out.println("Generation " + generationCount);
+					
+					if (parentsPool.size() < 2)
+						System.out.println("The last survivor is the winner");
+					
+					return parentsPool;
+				}
+				
 				/*
 				 * parents selection
 				 */
@@ -136,9 +169,13 @@ public class CreatureEvolution {
 				 * reproduce
 				 */
 				child = reproduce.produceChild(mom, dad);
-				//TODO (REQUIRED - Natalia): add offspring count back to corresponding genomes in parentsPool 
 				mom.addOffspring(1);
 				dad.addOffspring(1);
+				//System.out.println("Mom's offspring count AFTER = "+mom.getOffspringCount());///
+				//System.out.println("Dad's offspring count AFTER = "+dad.getOffspringCount());
+				
+				//remove individuals with max possible number of offspring from parents pool
+				parentsPool.removeIf(p -> p.getOffspringCount() == Genome.MAX_OFFSPRING_COUNT);
 				
 				/*
 				 * mutate
@@ -166,9 +203,9 @@ public class CreatureEvolution {
 		System.out.println(environment.toString());
 		
 		//select individual with max fitness level
-		Entry<Integer, Genome> winner = getWinner(population, environment);
+		winners = getWinners(population, environment);
 		
-		return winner;
+		return winners;
 	}
 	
 	/**
@@ -185,17 +222,29 @@ public class CreatureEvolution {
 	}
 	
 	/**
-	 * Determines the winner individual - the genome with the highest fitness level
+	 * Determines the winner individuals - the genomes with the highest fitness level
 	 * @param population
 	 * @param envmt environment
-	 * @return the <fitnessLevel, Genome> map entry with the highest fitness level
+	 * @return list of individuals with the highest fitness level
 	 */
-	private static Entry<Integer, Genome> getWinner(List<Genome> population, Environment envmt) {
+	@SuppressWarnings("unchecked")
+	private static List<Genome> getWinners(List<Genome> population, Environment envmt) {
 		//calculate fitness levels for population
 		Fitness fit = new Fitness();
-		TreeMap<Integer, Genome> popuMap = fit.calculatePopulationFitness(population, envmt);
+		population = fit.calculatePopulationFitness(population, envmt);
+		List<Genome> winners = new ArrayList<Genome>();
 		
-		//the <fitnessLevel, Genome> entry with the highest fitness level
-		return popuMap.lastEntry();
+		//sort population by fitness level in asc order
+		Collections.sort(population);
+		
+		//obtaining the top fitness level value - fitness level of the last individual in the sorted list
+		int topFitness = population.get(population.size()-1).getFitness();
+				
+		for (Genome gen : population) {
+			if (gen.getFitness() == topFitness)
+				winners.add(gen);
+		}
+		
+		return winners;
 	}
 }

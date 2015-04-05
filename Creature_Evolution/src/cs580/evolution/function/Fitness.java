@@ -4,7 +4,6 @@
 package cs580.evolution.function;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import cs580.evolution.pojo.Environment;
 import cs580.evolution.pojo.Genome;
@@ -72,18 +71,16 @@ public class Fitness {
 	 * Calculates fitness level for all individuals in population
 	 * @param population
 	 * @param envmt environment
-	 * @return tree map where key is fitness level, value is genome; map is sorted by fitness level in ascending order
+	 * @return same population with calculated fitness levels
 	 */
-	public TreeMap<Integer, Genome> calculatePopulationFitness(List<Genome> population, Environment envmt) {
-		TreeMap<Integer, Genome> popuMap = new TreeMap<Integer, Genome>();	//to store calculated fitness levels for population
+	public List<Genome> calculatePopulationFitness(List<Genome> population, Environment envmt) {
 		int fitLevel;
-		
-		//calculate fitness for population and add to the map
+
 		for (Genome gen : population) {
 			fitLevel = getFitnessLevel(gen, envmt);
-			popuMap.put(fitLevel, gen);
+			gen.setFitness(fitLevel);
 		}
 		
-		return popuMap;
+		return population;
 	}
 }
