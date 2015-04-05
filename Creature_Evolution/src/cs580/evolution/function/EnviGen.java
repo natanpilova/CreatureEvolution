@@ -60,27 +60,32 @@ public class EnviGen {
 			 * 
 			 */
 				
-				for(int i=1 ; i <= generationCount ; i++)				// Loops for the specified number of generations
-				{					
-					if(i == 10000)									// A big calamity after 10000 generations that rises the temperature abruptly (volcano or meteorite)
-					{
-						calamity();
-						i++;										// It will exist for 2 generations
-						continue;
-					}
+				//loop is not needed - you were going through all generations from the start - you need to generate environment just for current generation! -Natalia
+				//for(int i=1 ; i <= generationCount ; i++)				// Loops for the specified number of generations
+				//{
+				int i = generationCount;
 					
 					if(i % 50000 == 0 && i != 10000)				// Ice age every 50000 generations
 					{
+						System.out.println("Generation " + generationCount);
 						iceage();
-						continue;
+						//continue;
 					}
-					
-					if(tmax == 1)									// Generally, an abrupt rise in temperature is followed by an iceage
+					else if(tmax == 1)									// Generally, an abrupt rise in temperature is followed by an iceage
 					{
+						System.out.println("Generation " + generationCount);
 						iceage();
-						continue;
+						//continue;
 					}
 					
+					//moved calamity check under ice age check to avoid having both within the same generation
+					if(i == 10000)									// A big calamity after 10000 generations that rises the temperature abruptly (volcano or meteorite)
+					{
+						System.out.println("Generation " + generationCount);
+						calamity();
+						//i++;										// It will exist for 2 generations
+						//continue;
+					}
 					
 					if(new_temperature < 0 || new_temperature > 100)
 					{
@@ -98,7 +103,7 @@ public class EnviGen {
 						new_lightLevel = Environment.MAX_LIGHT_LEVEL;
 						new_pollutionLevel = Environment.MAX_POLLUTION_LEVEL;
 						new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;
-						continue;
+						//continue;
 					}
 					
 					if(new_temperature < -115)
@@ -107,7 +112,7 @@ public class EnviGen {
 						new_lightLevel = Environment.MIN_LIGHT_LEVEL;			// Total darkness
 						new_pollutionLevel = Environment.MIN_POLLUTION_LEVEL;
 						new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;
-						continue;
+						//continue;
 					}
 					
 					
@@ -137,7 +142,7 @@ public class EnviGen {
 					new_pollutionLevel = (new_temperature + 115) / 3; 					                //Pollution based on temperature
 					new_foodTotalAmount = 1000000000 - (Math.abs(new_temperature-35)*(1000000000/150)); // food is peak at 35C, reduces with increase/decrease
 													
-				}
+				//}
 				
 				/*
 				System.out.println("");
@@ -161,6 +166,7 @@ public class EnviGen {
 				new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;				// There would be no food at this temperature
 				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No water
 				tmax=0;											                // Calamity ends
+				System.out.println("-- ICE AGE --");
 			}
 			
 			public void calamity()
@@ -171,6 +177,7 @@ public class EnviGen {
 				new_pollutionLevel = Environment.MAX_POLLUTION_LEVEL;			// Higher the temperature, higher the pollution
 				new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;				// There would be no food at this temperature
 				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No Water
+				System.out.println("-- CALAMITY --");
 			}
 	
 }
