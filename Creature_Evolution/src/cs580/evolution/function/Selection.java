@@ -41,17 +41,19 @@ public class Selection {
 			//selecting parents randomly from the culled population
 			Random rand = new Random();
 			int index = rand.nextInt(parentsPool.size());
-			mom = parentsPool.remove(index);	//remove reference to mom from parents pool so mom cannot be picked again as a dad
+			//temporary remove reference to mom from parents pool so mom cannot be picked again as a dad
+			mom = parentsPool.remove(index);
 			
 			index = rand.nextInt(parentsPool.size());
 			dad = parentsPool.get(index);
+			
+			//add mom back to parents pool so it can be selected for next reproduction
+			parentsPool.add(mom);
 		}
 		
 		//added mom and dad to parents list
 		parents.add(mom);
 		parents.add(dad);
-		//System.out.println("Mom's offspring count BEFORE = "+mom.getOffspringCount());///
-		//System.out.println("Dad's offspring count BEFORE = "+dad.getOffspringCount());
 		
 		return parents;
 	}
