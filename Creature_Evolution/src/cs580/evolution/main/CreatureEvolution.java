@@ -3,17 +3,17 @@
  */
 package cs580.evolution.main;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Scanner;
 
 import cs580.evolution.function.EnviGen;
 import cs580.evolution.function.Fitness;
@@ -41,10 +41,8 @@ public class CreatureEvolution {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//TODO (REQUIRED - Natalia): add choice from input args: read population from file or generate random
 		//TODO (optional - Natalia): verbose flag as additional input argument
 		//TODO (optional - Natalia): better input arguments validation (can skip since we will know what values to plug in for demo)
-		//TODO (REQUIRED - Natalia): save randomly generated population to a file so it's possible to re-use it later
 		//TODO (REQUIRED - Natalia): direct output to log file in addition to system output
 		//TODO (optional - Natalia): set environmental characteristics from input args, add whatever other input args can be handy
 		//TODO (optional - Natalia): use some existing or new method in parent selection class to calculate prevalence of offspring - like calculate potential offspring count for winners
@@ -87,7 +85,7 @@ public class CreatureEvolution {
 						popl = readPopulationFromFile(inFile);
 						populationSize = popl.getSize();
 						initPopulation = popl.getPopul();
-					} catch (FileNotFoundException e) {
+					} catch (IOException e) {
 						System.err.println("File " + inFilePath + " does not exist. Please enther the correct full path to a file containing initial population data");
 						System.exit(0);
 					}
@@ -150,7 +148,7 @@ public class CreatureEvolution {
 		List<Genome> winners;
 		double tmp;	//to calculate log10 for generation number output
 		
-		System.out.println("Initial population size = " + population.size());
+		System.out.println("\nInitial population size = " + population.size());
 		System.out.println("Number of generations to create = " + generationsNumber);
 		
 		System.out.println("\nInitial environment:");
@@ -168,7 +166,7 @@ public class CreatureEvolution {
 				i++;
 			}
 		}
-		System.out.println();
+		System.out.println("*****\n");
 		
 		/*
 		 * outer loop: one iteration = one generation
@@ -263,6 +261,7 @@ public class CreatureEvolution {
 		return winners;
 	}
 	
+	
 	/**
 	 * Generates random population of the given size
 	 * and writes this population to the CSV file
@@ -302,13 +301,13 @@ public class CreatureEvolution {
             oneLine.append(CSV_SEPARATOR);
             oneLine.append("Wings Number");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Coat Thickness, cm");
+            oneLine.append("Coat Thickness in cm");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Weight, kg");
+            oneLine.append("Weight in kg");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Metabolism, kCal/day");
+            oneLine.append("Metabolism in kCal/day");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Height, m");
+            oneLine.append("Height in m");
             oneLine.append(CSV_SEPARATOR);
             oneLine.append("Cooperates with others?");
             oneLine.append(CSV_SEPARATOR);
@@ -362,31 +361,49 @@ public class CreatureEvolution {
 	 * Reads population from the CSV file
 	 * @param inFile input file containing the list of genomes
 	 * @return instance containing population and its size
-	 * @throws FileNotFoundException
+	 * @throws IOException 
 	 */
-	private static PopulationPair readPopulationFromFile(File inFile) throws FileNotFoundException {
+	private static PopulationPair readPopulationFromFile(File inFile) throws IOException {
 		List<Genome> inPopulation = new ArrayList<Genome>();
 		Genome gen;
 		int inPopulationSize = -1;	//to skip the header line
 		
-		Scanner scanner = new Scanner(inFile);
-        scanner.useDelimiter(CSV_SEPARATOR);
-        
-        while (scanner.hasNextLine()) {
-            System.out.print(scanner.next()+"|");///
-            //skip the header line
+		BufferedReader br = null;
+		String line = "";
+		String[] genome;	//to store one line as array
+		br = new BufferedReader(new FileReader(inFile));
+		
+		//reading file line by line
+		while ((line = br.readLine()) != null) {
+			//skip the header line
             if (inPopulationSize >= 0) {
-	            gen = new Genome();///TODO -Natalia
-	            inPopulation.add(gen);
+				genome = line.split(CSV_SEPARATOR);
+				/*for (String s : genome) {
+					System.out.print(s+"|");
+				}*/
+				gen = new Genome();
+				gen.setEyesNumber(Integer.parseInt(genome[0]));
+				gen.setEarsNumber(Integer.parseInt(genome[1]));
+				gen.setLegsNumber(Integer.parseInt(genome[2]));
+				gen.setFinsNumber(Integer.parseInt(genome[3]));
+				gen.setWingsNumber(Integer.parseInt(genome[4]));
+				gen.setCoatThickness(Integer.parseInt(genome[5]));
+				gen.setWeight(Integer.parseInt(genome[6]));
+				gen.setMetabolism(Integer.parseInt(genome[7]));
+				gen.setHeight(Double.parseDouble(genome[8]));
+				gen.setCooperationFlag(Boolean.parseBoolean(genome[9]));
+				gen.setOffspringCount(Integer.parseInt(genome[10]));
+				inPopulation.add(gen);
             }
-            inPopulationSize ++;
-        }
-        scanner.close();
-        
-        PopulationPair popl = new PopulationPair(inPopulationSize, inPopulation);
-        
+			inPopulationSize ++;
+		}
+		if (br != null) 
+			br.close();
+
+		PopulationPair popl = new PopulationPair(inPopulationSize, inPopulation);
 		return popl;
 	}
+	
 	
 	/**
 	 * Determines the winner individuals - the genomes with the highest fitness level
