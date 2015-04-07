@@ -358,18 +358,18 @@ public class Genome implements Comparable {
 	 */
 	@Override
 	public String toString() {
-		return "eyes number = " + eyesNumber +
-				"\n, ears number = " + earsNumber +
-				"\n, legs number = " + legsNumber +
-				"\n, fins number = "	+ finsNumber +
-				"\n, wings number = " + wingsNumber +
-				"\n, coat thickness = " + coatThickness + " cm" +
-				"\n, height = " + (double)Math.round(height*100)/100 + " m" +
-				"\n, weight = " + weight + " kg" +
-				"\n, metabolism = " + metabolism + " kCal per day" +
-				"\n, cooperates with others = " + cooperationFlag +
-				"\n, offspring count = " + offspringCount +
-				"\n. Fitness level = " + fitness;
+		return "eyes number = " + eyesNumber + ", " +
+				"\n ears number = " + earsNumber + ", " +
+				"\n legs number = " + legsNumber + ", " +
+				"\n fins number = "	+ finsNumber + ", " +
+				"\n wings number = " + wingsNumber + ", " +
+				"\n coat thickness = " + coatThickness + " cm, " +
+				"\n height = " + (double)Math.round(height*100)/100 + " m, " +
+				"\n weight = " + weight + " kg, " +
+				"\n metabolism = " + metabolism + " kCal per day, " +
+				"\n cooperates with others = " + cooperationFlag + ", " +
+				"\n offspring count = " + offspringCount + ". " +
+				"\n Fitness level = " + fitness;
 	}
 
 	/* (non-Javadoc)
