@@ -1,6 +1,6 @@
 1. Assignee: Ankith
    Due April 20	
-   TODO: Replace some of the hard-coded here values (number of generations for calamity and ice age)
+   TODO: Replace some of the hard-coded in Environment EG() values (number of generations for calamity and ice age)
    		 with environmental characteristics from input args - coordinate with Natalia.
    		 Best is to add them as class instance variables and pass in via constructor in here
    		 
