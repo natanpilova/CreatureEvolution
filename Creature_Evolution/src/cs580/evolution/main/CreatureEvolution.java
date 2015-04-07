@@ -107,6 +107,8 @@ public class CreatureEvolution {
 			 */
 			Environment initEnvironment = new Environment();
 			
+			log.info("*** CREATURE EVOLUTION START ***");
+			
 			/*
 			 * call genetic algorithm
 			 */
@@ -127,6 +129,8 @@ public class CreatureEvolution {
 					i++;
 				}
 			}
+			
+			log.info("*** CREATURE EVOLUTION END ***");
 			
 		} else {
 			System.err.println("Invalid number of input arguments. Please use 2 argumens in one of two options:");
