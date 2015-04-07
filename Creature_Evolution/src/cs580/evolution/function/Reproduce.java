@@ -12,14 +12,6 @@ import cs580.evolution.pojo.Genome;
  */
 public class Reproduce {
 
-	//TODO (REQUIRED - Ashwin): check if the resulting child has realistic genome:
-	//adjust metabolism with weight, height and other genes like -
-	//if number of eyes/wings/ears/legs/fins/height/weight increased, metabolism should be higher, if decreased - lower (having all these extra things need more energy!),
-	//if height is big then the weight cannot be too small, and vice versa.
-	//This is to rule out unlikely situations like height is 10cm and weight is 1 ton, and this creature eats only 1kCal per day. Impossible, right?
-	//Best is to add one more private method returning boolean value - say, sanityCheck(Genome kid) for this check, and call it on the kid at the end of produceChild();
-	//if didn't pass (returns false) then produce another child instead - so loop like "while (!sanityCheck(kid) {....}" is needed
-	
 	/**
 	 * Reproduce function
 	 * @param mom
@@ -28,7 +20,7 @@ public class Reproduce {
 	 */
 	public Genome produceChild(Genome mom, Genome dad) {
 		Random r = new Random();
-		int crossover = r.nextInt(8);
+		
 		
 		int[] momarray = new int[8];
 		int[] dadarray = new int[8];
@@ -54,7 +46,11 @@ public class Reproduce {
 		dadarray[6] = dad.getWeight();
 		dadarray[7] = dad.getMetabolism();
 		
-	
+		Genome kid = null;
+		do
+		{
+		int crossover = r.nextInt(8);
+		
 		if(crossover > 0)
 		for(int i=0;i<crossover;i++)
 		childarray[i] = momarray[i];
@@ -71,9 +67,33 @@ public class Reproduce {
 		else
 		h = dad.getHeight();
 		
-		Genome kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], childarray[6], childarray[7], h, coop);
-
+		kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], childarray[6], childarray[7], h, coop);
+		
+			
+		}while(!GenomeCheck(kid));
 		
 		return kid;
+	}
+	
+	/**
+	 * Check if the resulting child has realistic genome
+	 * @param kid
+	 * @return true if pass
+	 */
+	public boolean GenomeCheck(Genome kid){
+		
+		if(kid.getHeight() <= 1 && kid.getWeight() <= 150 && kid.getMetabolism() <= 500)
+		return true;
+		else if(kid.getHeight()>1 && kid.getHeight()<=10 && kid.getWeight()>150 && kid.getWeight()<=300 && kid.getMetabolism()>500 && kid.getMetabolism()<=1500)
+		return true;
+		else if(kid.getHeight()>10 && kid.getHeight()<=30 && kid.getWeight()>300 && kid.getWeight()<=1500 && kid.getMetabolism()>1500 && kid.getMetabolism()<=5000)
+		return true;
+		else if(kid.getHeight()>30 && kid.getHeight()<=60 && kid.getWeight()>1500 && kid.getWeight()<=5000 && kid.getMetabolism()>5000 && kid.getMetabolism()<=10000)
+		return true;
+		else if(kid.getHeight()>60 && kid.getHeight()<=80 && kid.getWeight()>5000 && kid.getWeight()<=7500 && kid.getMetabolism()>10000 && kid.getMetabolism()<=100000)
+		return true;
+		else if(kid.getHeight()>80 && kid.getWeight()>7500 && kid.getMetabolism()>100000)
+		return true;
+		else return false;
 	}
 }
