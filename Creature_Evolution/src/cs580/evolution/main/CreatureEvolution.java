@@ -48,7 +48,6 @@ public class CreatureEvolution {
 	public static void main(String[] args) {
 		//TODO (optional - Natalia): verbose flag as additional input argument
 		//TODO (optional - Natalia): better input arguments validation (can skip since we will know what values to plug in for demo)
-		//TODO (REQUIRED - Natalia): direct output to log file in addition to system output
 		//TODO (optional - Natalia): set environmental characteristics from input args, add whatever other input args can be handy
 		//TODO (optional - Natalia): use some existing or new method in parent selection class to calculate prevalence of offspring - like calculate potential offspring count for winners
 		
