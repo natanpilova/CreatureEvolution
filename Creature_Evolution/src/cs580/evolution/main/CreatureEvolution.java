@@ -124,8 +124,7 @@ public class CreatureEvolution {
 				for (Genome winner : winners) {
 					System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Genome:");
 					System.out.println(winner.toString());
-					log.info((winners.size() == 1 ? "" : i+". ") + "Genome:");
-					log.info(winner.toString());
+					log.info((winners.size() == 1 ? "" : i+". ") + "Genome: " + winner.toString());
 					i++;
 				}
 			}
@@ -182,8 +181,7 @@ public class CreatureEvolution {
 			for (Genome winner : winners) {
 				System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Genome:");
 				System.out.println(winner.toString());
-				log.info((winners.size() == 1 ? "" : i+". ") + "Genome:");
-				log.info(winner.toString());
+				log.info((winners.size() == 1 ? "" : i+". ") + "Genome: " + winner.toString());
 				i++;
 			}
 		}
