@@ -54,6 +54,8 @@ public class CreatureEvolution {
 		
 		//just 2 input args for now
 		if (args.length > 1) {
+			log.info("************** CREATURE EVOLUTION START **************");
+			
 			int populationSize;
 			int generationsNumber = Integer.parseInt(args[1].replace("generations_number=", ""));
 			
@@ -106,8 +108,6 @@ public class CreatureEvolution {
 			 * initial livable environment
 			 */
 			Environment initEnvironment = new Environment();
-			
-			log.info("************** CREATURE EVOLUTION START **************");
 			
 			/*
 			 * call genetic algorithm
