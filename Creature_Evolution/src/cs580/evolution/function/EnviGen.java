@@ -135,8 +135,7 @@ public class EnviGen {
 					new_temperature = new_temperature - 1;				// Temperature decreases by 1 for each generation
 					}
 					
-					//TODO (optional - Ankith): this is a linear "zig-zag" dependency which is fine; but if you want real sin then use it instead
-					// A temperature shift in the form of a sine wave 
+					// A temperature shift in the form of a pseudo-sine wave 
 					if(new_temperature == 185)							// Temperature upper boundary for other factors to exist
 					{
 						direction = 0;								    // Value starts to decrease after reaching maxima
