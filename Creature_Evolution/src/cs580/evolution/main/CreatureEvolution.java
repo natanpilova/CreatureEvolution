@@ -168,8 +168,7 @@ public class CreatureEvolution {
 		
 		System.out.println("\nInitial environment:");
 		System.out.println(environment.toString());
-		log.info("Initial environment:");
-		log.info(environment.toString());
+		log.info("Initial environment: " + environment.toString());
 		System.out.println();
 		
 		//output most fit individuals from initial population
@@ -282,8 +281,7 @@ public class CreatureEvolution {
 		System.out.println(environment.toString());
 		
 		log.info("Final population size = " + population.size());
-		log.info("Final environment:");
-		log.info(environment.toString());
+		log.info("Final environment: " + environment.toString());
 		
 		//select individual with max fitness level
 		winners = getWinners(population, environment);
