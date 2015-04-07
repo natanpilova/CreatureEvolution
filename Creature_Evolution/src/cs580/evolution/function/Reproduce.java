@@ -80,7 +80,7 @@ public class Reproduce {
 	 * @param kid
 	 * @return true if pass
 	 */
-	public boolean GenomeCheck(Genome kid){
+	public static boolean GenomeCheck(Genome kid){
 		
 		if(kid.getHeight() <= 1 && kid.getWeight() <= 150 && kid.getMetabolism() <= 500)
 		return true;

@@ -5,6 +5,8 @@ package cs580.evolution.pojo;
 
 import java.util.Random;
 
+import cs580.evolution.function.Reproduce;
+
 /**
  * @author Natalia Anpilova (will add all the team here)
  *
@@ -115,55 +117,57 @@ public class Genome implements Comparable {
 		Genome randomGenome = new Genome();
 		Random rand = new Random(); 
 		
-		//TODO (Natalia - REQUIRED): add sanity check
-		int randomInt = rand.nextInt(MAX_EYES_NUMBER+1);
-		if (randomInt < MIN_EYES_NUMBER)
-			randomInt = MIN_EYES_NUMBER;
-		randomGenome.setEyesNumber(randomInt);
-		
-		randomInt = rand.nextInt(MAX_EARS_NUMBER+1);
-		if (randomInt < MIN_EARS_NUMBER)
-			randomInt = MIN_EARS_NUMBER;
-		randomGenome.setEarsNumber(randomInt);
-		
-		randomInt = rand.nextInt(MAX_LEGS_NUMBER+1);
-		if (randomInt < MIN_LEGS_NUMBER)
-			randomInt = MIN_LEGS_NUMBER;
-		randomGenome.setLegsNumber(randomInt);
-		
-		randomInt = rand.nextInt(MAX_FINS_NUMBER+1);
-		if (randomInt < MIN_FINS_NUMBER)
-			randomInt = MIN_FINS_NUMBER;
-		randomGenome.setFinsNumber(randomInt);
-		
-		randomInt = rand.nextInt(MAX_WINGS_NUMBER+1);
-		if (randomInt < MIN_WINGS_NUMBER)
-			randomInt = MIN_WINGS_NUMBER;
-		randomGenome.setWingsNumber(randomInt);
-		
-		randomInt = rand.nextInt(MAX_COAT_THICKNESS+1);
-		if (randomInt < MIN_COAT_THICKNESS)
-			randomInt = MIN_COAT_THICKNESS;
-		randomGenome.setCoatThickness(randomInt);
-		
-		randomInt = rand.nextInt(MAX_WEIGHT+1);
-		if (randomInt < MIN_WEIGHT)
-			randomInt = MIN_WEIGHT;
-		randomGenome.setWeight(randomInt);
-		
-		randomInt = rand.nextInt(MAX_METABOLISM+1);
-		if (randomInt < MIN_METABOLISM)
-			randomInt = MIN_METABOLISM;
-		randomGenome.setMetabolism(randomInt);
-		
-		double randomDouble = rand.nextDouble();
-		if (randomDouble < MIN_HEIGHT)
-			randomDouble = MIN_HEIGHT;
-		else if (randomDouble > MAX_HEIGHT)
-			randomDouble = MAX_HEIGHT;
-		randomGenome.setHeight(randomDouble);
-		
-		randomGenome.setCooperationFlag(rand.nextBoolean());
+		do {
+			int randomInt = rand.nextInt(MAX_EYES_NUMBER+1);
+			if (randomInt < MIN_EYES_NUMBER)
+				randomInt = MIN_EYES_NUMBER;
+			randomGenome.setEyesNumber(randomInt);
+			
+			randomInt = rand.nextInt(MAX_EARS_NUMBER+1);
+			if (randomInt < MIN_EARS_NUMBER)
+				randomInt = MIN_EARS_NUMBER;
+			randomGenome.setEarsNumber(randomInt);
+			
+			randomInt = rand.nextInt(MAX_LEGS_NUMBER+1);
+			if (randomInt < MIN_LEGS_NUMBER)
+				randomInt = MIN_LEGS_NUMBER;
+			randomGenome.setLegsNumber(randomInt);
+			
+			randomInt = rand.nextInt(MAX_FINS_NUMBER+1);
+			if (randomInt < MIN_FINS_NUMBER)
+				randomInt = MIN_FINS_NUMBER;
+			randomGenome.setFinsNumber(randomInt);
+			
+			randomInt = rand.nextInt(MAX_WINGS_NUMBER+1);
+			if (randomInt < MIN_WINGS_NUMBER)
+				randomInt = MIN_WINGS_NUMBER;
+			randomGenome.setWingsNumber(randomInt);
+			
+			randomInt = rand.nextInt(MAX_COAT_THICKNESS+1);
+			if (randomInt < MIN_COAT_THICKNESS)
+				randomInt = MIN_COAT_THICKNESS;
+			randomGenome.setCoatThickness(randomInt);
+			
+			randomInt = rand.nextInt(MAX_WEIGHT+1);
+			if (randomInt < MIN_WEIGHT)
+				randomInt = MIN_WEIGHT;
+			randomGenome.setWeight(randomInt);
+			
+			randomInt = rand.nextInt(MAX_METABOLISM+1);
+			if (randomInt < MIN_METABOLISM)
+				randomInt = MIN_METABOLISM;
+			randomGenome.setMetabolism(randomInt);
+			
+			double randomDouble = rand.nextDouble();
+			if (randomDouble < MIN_HEIGHT)
+				randomDouble = MIN_HEIGHT;
+			else if (randomDouble > MAX_HEIGHT)
+				randomDouble = MAX_HEIGHT;
+			randomGenome.setHeight(randomDouble);
+			
+			randomGenome.setCooperationFlag(rand.nextBoolean());
+			
+		} while (!Reproduce.GenomeCheck(randomGenome)); //check for realistic genome
 		
 		return randomGenome;
 	}
