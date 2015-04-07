@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="CreatureEvolution" basedir="." default="jar">
 	<property name="project" value="CreatureEvolution" />
-	<property name="jar.dir" value="." />
 	<property name="basedir" value="." />
 	<property name="src.dir" value="${basedir}/src" />
 	<property name="build.classes.dir" value="${basedir}/bin" />
+	<property name="jar.dir" value="C:/dist" />
 	<property name="dist.dir" value="C:/dist" />
 
 	<path id="combined.classpath">
@@ -24,7 +24,11 @@
 		</delete>
 	</target>
 	
-	<target name="compile" depends="clean">
+	<target name="makedir">
+	    <mkdir dir="${build.classes.dir}" />
+	</target>
+	
+	<target name="compile" depends="clean, makedir">
 		<javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="on" includeantruntime="false">
 			<classpath id="classpath">
 				<fileset dir="${jar.dir}">

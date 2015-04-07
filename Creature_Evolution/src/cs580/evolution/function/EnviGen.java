@@ -1,5 +1,8 @@
 /* Class to Generate a new Environment */
 package cs580.evolution.function;
+import org.apache.log4j.Logger;
+
+import cs580.evolution.main.CreatureEvolution;
 import cs580.evolution.pojo.Environment;
 
 /**
@@ -12,6 +15,9 @@ public class EnviGen {
 		//with environmental characteristics from input args - coordinate with Natalia (if she implements these input args)
 		//If we do this then best is to add them as class instance variables and pass in via constructor in here
 	
+		//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
+		final static Logger log = Logger.getLogger(CreatureEvolution.class);
+		
 		int tmax=0;					   	// If there is a calamity. Initially none
 		int direction = 1;				// Direction of the sine wave. 1: Increase, 0: Decrease. Initially increase
 		
@@ -68,12 +74,14 @@ public class EnviGen {
 					if(i % 50000 == 0 && i != 10000)				// Ice age every 50000 generations
 					{
 						System.out.println("Generation " + generationCount);
+						log.info("Generation " + generationCount);
 						iceage();
 						//continue;
 					}
 					else if(tmax == 1)									// Generally, an abrupt rise in temperature is followed by an iceage
 					{
 						System.out.println("Generation " + generationCount);
+						log.info("Generation " + generationCount);
 						iceage();
 						//continue;
 					}
@@ -82,6 +90,7 @@ public class EnviGen {
 					if(i == 10000)									// A big calamity after 10000 generations that rises the temperature abruptly (volcano or meteorite)
 					{
 						System.out.println("Generation " + generationCount);
+						log.info("Generation " + generationCount);
 						calamity();
 						//i++;										// It will exist for 2 generations
 						//continue;
@@ -167,6 +176,7 @@ public class EnviGen {
 				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No water
 				tmax=0;											                // Calamity ends
 				System.out.println("-- ICE AGE --");
+				log.info("-- ICE AGE --");
 			}
 			
 			public void calamity()
@@ -178,6 +188,7 @@ public class EnviGen {
 				new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;				// There would be no food at this temperature
 				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No Water
 				System.out.println("-- CALAMITY --");
+				log.info("-- CALAMITY --");
 			}
 	
 }

@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import cs580.evolution.function.EnviGen;
 import cs580.evolution.function.Fitness;
 import cs580.evolution.function.Mutation;
@@ -36,6 +38,9 @@ public class CreatureEvolution {
 	//constants for output file where we dump the randomly generated initial population
 	private static final String CSV_SEPARATOR = ", ";
 	private static final String OUT_FILENAME_BASE = "C:/evolution/init_population";
+	
+	//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
+	final static Logger log = Logger.getLogger(CreatureEvolution.class);
 	
 	/**
 	 * @param args
@@ -107,14 +112,18 @@ public class CreatureEvolution {
 			 */
 			List<Genome> winners = geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
 			
-			if (winners.isEmpty())
+			if (winners.isEmpty()) {
 				System.out.println("\n*** NO WINNER ***");
-			else {
+				log.info("*** NO WINNER ***");
+			} else {
 				System.out.println("\n*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");	
+				log.info("*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");
 				int i = 1;
 				for (Genome winner : winners) {
 					System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Genome:");
 					System.out.println(winner.toString());
+					log.info((winners.size() == 1 ? "" : i+". ") + "Genome:");
+					log.info(winner.toString());
 					i++;
 				}
 			}
@@ -122,7 +131,7 @@ public class CreatureEvolution {
 		} else {
 			System.err.println("Invalid number of input arguments. Please use 2 argumens in one of two options:");
 			System.err.println("1. For random initial population, use arguments \ninit_population_size=<population size>\ngenerations_number=<number of generations>");
-			System.err.println("2. For reading initial population from a file, use arguments \ninit_population_size<population file>\ngenerations_number=<number of generations>");
+			System.err.println("2. For reading initial population from a file, use arguments \ninit_population_file=<population file>\ngenerations_number=<number of generations>");
 		}
 	}
 
@@ -148,25 +157,34 @@ public class CreatureEvolution {
 		List<Genome> winners;
 		double tmp;	//to calculate log10 for generation number output
 		
+		//output both to terminal and log file
 		System.out.println("\nInitial population size = " + population.size());
 		System.out.println("Number of generations to create = " + generationsNumber);
+		log.info("Initial population size = " + population.size());
+		log.info("Number of generations to create = " + generationsNumber);
 		
 		System.out.println("\nInitial environment:");
 		System.out.println(environment.toString());
+		log.info("Initial environment:");
+		log.info(environment.toString());
 		System.out.println();
 		
 		//output most fit individuals from initial population
 		winners = getWinners(population, environment);
 		if (!winners.isEmpty()) {
 			System.out.println("\n*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");	
+			log.info("*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");
 			int i = 1;
 			for (Genome winner : winners) {
 				System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Genome:");
 				System.out.println(winner.toString());
+				log.info((winners.size() == 1 ? "" : i+". ") + "Genome:");
+				log.info(winner.toString());
 				i++;
 			}
 		}
 		System.out.println("*****\n");
+		log.info("*****");
 		
 		/*
 		 * outer loop: one iteration = one generation
@@ -177,17 +195,16 @@ public class CreatureEvolution {
 			 * output generation number - log10 scale
 			 */
 			tmp = Math.log10(generationCount);
-			if (tmp == (int)tmp || generationCount == generationsNumber)
+			if (tmp == (int)tmp || generationCount == generationsNumber) {
 				System.out.println("Generation " + generationCount);
+				log.info("Generation " + generationCount);
+			}
 			newPopulation = new ArrayList<Genome>();
 			
 			/*
 			 * potential parents pre-selection based on the fitness level
 			 */
-			//System.out.print("culling...");
 			parentsPool = selection.cullPopulation(population, environment);
-			//System.out.println("...done.");
-			//System.out.println("** generation "+generationCount+" culled population size " + parentsPool.size());
 			
 			/*
 			 * inner loop: generating offspring as new population
@@ -201,12 +218,21 @@ public class CreatureEvolution {
 					System.out.println("\nFinal environment:");
 					System.out.println(environment.toString());
 					
-					//output the last generation number
-					if (tmp != (int)tmp && generationCount != generationsNumber)
-						System.out.println("Generation " + generationCount);
+					log.warn("Not enough individuals in the parents pool: actual number is " + parentsPool.size() + ", min allowed number is 2");
+					log.info("Final population size = " + population.size());
+					log.info("Final environment:");
+					log.info(environment.toString());
 					
-					if (parentsPool.size() < 2)
+					//output the last generation number
+					if (tmp != (int)tmp && generationCount != generationsNumber) {
+						System.out.println("Generation " + generationCount);
+						log.info("Generation " + generationCount);
+					}
+					
+					if (parentsPool.size() < 2) {
 						System.out.println("The last survivor is the winner");
+						log.info("The last survivor is the winner");
+					}
 					
 					return parentsPool;
 				}
@@ -214,9 +240,7 @@ public class CreatureEvolution {
 				/*
 				 * parents selection
 				 */
-				//System.out.print("selection parents (culled pop size "+parentsPool.size()+") for child "+i+"...");
 				parents = selection.getParents(parentsPool, environment);
-				//System.out.println("...done.");
 				mom = parents.get(0);
 				dad = parents.get(1);
 				
@@ -254,6 +278,10 @@ public class CreatureEvolution {
 		System.out.println("Final population size = " + population.size());
 		System.out.println("\nFinal environment:");
 		System.out.println(environment.toString());
+		
+		log.info("Final population size = " + population.size());
+		log.info("Final environment:");
+		log.info(environment.toString());
 		
 		//select individual with max fitness level
 		winners = getWinners(population, environment);
@@ -347,10 +375,12 @@ public class CreatureEvolution {
 	        bw.flush();
 	        bw.close();
 	        System.out.println("Initial population saved in file " + outFileName);
+	        log.info("Initial population saved in file " + outFileName);
 	        
 	    //if failed to write to a file - proceed anyway
 		} catch (IOException e) {
 			System.out.println("WARNING: unable to write generated population to CSV file. Writing to the file skipped.\n");
+			log.warn("Unable to write generated population to CSV file. Writing to the file skipped.");
 		}
 		
 		return randomPopulation;
