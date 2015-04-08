@@ -18,3 +18,7 @@
 4. Assignee: Natalia
    Due April 20	
    TODO: Use some existing or new method in parent selection class to calculate prevalence of offspring - like calculate potential offspring count for winners 
+   
+5. Assignee: Natalia
+   Due April 20	
+   TODO: Genome integrity check: account for possibility that parents are “incompatible”, i.e. can produce only offspring which cannot physically exist
