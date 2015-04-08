@@ -362,7 +362,7 @@ public class Genome implements Comparable {
 	 */
 	@Override
 	public String toString() {
-		return " eyes number = " + eyesNumber + ", " +
+		return "\n eyes number = " + eyesNumber + ", " +
 				"\n ears number = " + earsNumber + ", " +
 				"\n legs number = " + legsNumber + ", " +
 				"\n fins number = "	+ finsNumber + ", " +
