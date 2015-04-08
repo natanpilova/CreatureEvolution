@@ -69,7 +69,7 @@ public class Reproduce {
 		
 		kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], childarray[6], childarray[7], h, coop);
 		
-			
+		System.out.println("--- check "+GenomeCheck(kid));
 		}while(!GenomeCheck(kid));
 		
 		return kid;
@@ -82,17 +82,17 @@ public class Reproduce {
 	 */
 	public static boolean GenomeCheck(Genome kid){
 		
-		if(kid.getHeight() <= 1 && kid.getWeight() <= 150 && kid.getMetabolism() <= 500)
+		if(kid.getHeight() <= 1 && kid.getWeight() <= 30 && kid.getMetabolism() <= 500)
 		return true;
-		else if(kid.getHeight()>1 && kid.getHeight()<=10 && kid.getWeight()>150 && kid.getWeight()<=300 && kid.getMetabolism()>500 && kid.getMetabolism()<=1500)
+		else if(kid.getHeight()>1 && kid.getHeight()<=10 && kid.getWeight()>30 && kid.getWeight()<=300 && kid.getMetabolism()>500 && kid.getMetabolism()<=15000)
 		return true;
-		else if(kid.getHeight()>10 && kid.getHeight()<=30 && kid.getWeight()>300 && kid.getWeight()<=1500 && kid.getMetabolism()>1500 && kid.getMetabolism()<=5000)
+		else if(kid.getHeight()>10 && kid.getHeight()<=30 && kid.getWeight()>300 && kid.getWeight()<=1500 && kid.getMetabolism()>15000 && kid.getMetabolism()<=50000)
 		return true;
-		else if(kid.getHeight()>30 && kid.getHeight()<=60 && kid.getWeight()>1500 && kid.getWeight()<=5000 && kid.getMetabolism()>5000 && kid.getMetabolism()<=10000)
+		else if(kid.getHeight()>30 && kid.getHeight()<=60 && kid.getWeight()>1500 && kid.getWeight()<=5000 && kid.getMetabolism()>50000 && kid.getMetabolism()<=100000)
 		return true;
-		else if(kid.getHeight()>60 && kid.getHeight()<=80 && kid.getWeight()>5000 && kid.getWeight()<=7500 && kid.getMetabolism()>10000 && kid.getMetabolism()<=100000)
+		else if(kid.getHeight()>60 && kid.getHeight()<=80 && kid.getWeight()>5000 && kid.getWeight()<=7500 && kid.getMetabolism()>100000 && kid.getMetabolism()<=750000)
 		return true;
-		else if(kid.getHeight()>80 && kid.getWeight()>7500 && kid.getMetabolism()>100000)
+		else if(kid.getHeight()>80 && kid.getWeight()>7500 && kid.getMetabolism()>750000)
 		return true;
 		else return false;
 	}
