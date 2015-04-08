@@ -47,8 +47,8 @@ public class Reproduce {
 		dadarray[7] = dad.getMetabolism();
 		
 		Genome kid = null;
-		do
-		{
+		//commented this check out since we need to solve infinite loop problem: if given parents can only produce "bad" offspring then it loops forever
+//		do {
 		int crossover = r.nextInt(8);
 		
 		if(crossover > 0)
@@ -69,7 +69,7 @@ public class Reproduce {
 		
 		kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], childarray[6], childarray[7], h, coop);
 		
-		}while(!GenomeCheck(kid));
+//		}while(!GenomeCheck(kid));
 		
 		return kid;
 	}
