@@ -158,7 +158,7 @@ public class Genome implements Comparable {
 				randomInt = MIN_METABOLISM;
 			randomGenome.setMetabolism(randomInt);
 			
-			double randomDouble = rand.nextDouble();
+			double randomDouble = 100*rand.nextDouble();
 			if (randomDouble < MIN_HEIGHT)
 				randomDouble = MIN_HEIGHT;
 			else if (randomDouble > MAX_HEIGHT)
