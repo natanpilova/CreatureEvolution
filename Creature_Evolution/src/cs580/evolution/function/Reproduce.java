@@ -69,7 +69,6 @@ public class Reproduce {
 		
 		kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], childarray[6], childarray[7], h, coop);
 		
-		System.out.println("--- check "+GenomeCheck(kid));
 		}while(!GenomeCheck(kid));
 		
 		return kid;
