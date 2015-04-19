@@ -1,3 +1,78 @@
+
+This is under assumption that we're all agreed to proceed with "Best ant foragers to solve hunger" project direction.
+The goal is to find the best ant forager features combination which will allow to accumulate more extra food in the colony;
+this extra food can be used by humans (as it is done with rooibos seeds at some areas of South Africa).
+
+*** INDIVIDUAL ASSIGNMENTS ***
+
+1. Assignee: Natalia
+   Due April 20	
+   TODO:
+   - add AntForager POJO to replace Genome
+
+   Due April 22	
+   TODO:
+   - change main class so it's with GUI (JPanel)
+   
+   Due April 25	
+   TODO:
+   - overwrite Fitness so the result of it is the food amount brought home (food found - food consumed)
+   - update Selection to deal with AntForager instead of Genome
+
+
+2. Assignee: Ankith
+   Due April 25	
+   TODO:
+   - update EnviGen so it's more inline with real weather (South Africa typical climate)
+   - update Environment() constructor so the default environment is South Africa area typical climate, too
+
+
+The prerequisite for assignments below is that Natalia finishes her due April 20 task.
+
+3. Assignee: Ashwin
+   Due April 25	
+   TODO:
+   - update Reproduce to deal with AntForager instead of Genome
+
+
+4. Assignee: Divya
+   Due April 25	
+   TODO:
+   - update Mutation to deal with AntForager instead of Genome
+
+
+*** GROUP ASSIGNMENTS ***
+This is what should be done after or in parallel with the individual assignments above.
+I assigned these based on my feeling what is optimal work split (it is too much for same people to focus both on report and
+charts programming) - but please let me know if you disagree and want to do graphics instead of report and vice versa.
+
+5. Assignees: Ashwin, Ankith, some help from Natalia
+   Due April 26	
+   TODO:
+   - use JFreeChart (https://docs.oracle.com/javase/tutorial/2d/TOC.html) (or whatever we end up with) library
+     to draw "total food per generation X" and "total ants died so far" charts on the main JPane
+     (requires implementation discussion)
+
+
+6. Assignees: Divya, Manjusha
+   Due April 29	
+   TODO:
+   - update progress report so it is our final report (add something about  Central Africa people'
+     food collection from ants colonies - can't remember the link but I saw it on Wiki somewhere - please research)
+   - slides
+
+
+
+
+
+
+
+
+
+
+
+
+******* OLD STUFF - DESREGARD *********
 1. Assignee: Ankith
    Due April 20	
    TODO: Replace some of the hard-coded in Environment EG() values (number of generations for calamity and ice age)
@@ -21,4 +96,4 @@
    
 5. Assignee: Natalia
    Due April 20	
-   TODO: Genome integrity check: account for possibility that parents are �incompatible�, i.e. can produce only offspring which cannot physically exist
+   TODO: Genome integrity check: account for possibility that parents are â€œincompatibleâ€�, i.e. can produce only offspring which cannot physically exist
