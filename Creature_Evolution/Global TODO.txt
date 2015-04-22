@@ -8,17 +8,17 @@ this extra food can be used by humans (as it is done with rooibos seeds at some 
 1. Assignee: Natalia
    Due April 20	
    TODO:
-   - add AntForager POJO to replace Genome
+   - add AntForager POJO to replace Genome //DONE
 
    Due April 22	
    TODO:
-   - change main class so it uses AntForager instead of Genome
-   - change main class so it is with GUI (JPanel)
+   - change main class so it uses AntForager instead of Genome //DONE
+   - change main class so it is with GUI (JPanel) //IN PROCESS, will finish Wednesday night
    
    Due April 25	
    TODO:
    - overwrite Fitness so the result of it is the food amount brought home (food found - food consumed)
-   - update Selection to deal with AntForager instead of Genome
+   - update Selection to deal with AntForager instead of Genome //DONE
 
 
 2. Assignee: Ankith

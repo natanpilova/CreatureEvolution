@@ -5,8 +5,8 @@ package cs580.evolution.function;
 
 import java.util.List;
 
+import cs580.evolution.pojo.AntForager;
 import cs580.evolution.pojo.Environment;
-import cs580.evolution.pojo.Genome;
 
 /**
  * @author Natalia Anpilova
@@ -17,16 +17,16 @@ public class Fitness {
 	/**
 	 * fitness function
 	 * Min possible level is 0
-	 * Max possible level is 52 (calculated based on max genome values)
+	 * Max possible level is <TBD>
 	 * @param ind
 	 * @param env current environment
 	 * @return fitness level of individual
 	 */
-	public int getFitnessLevel(Genome ind, Environment env) {
+	public int getFitnessLevel(AntForager ind, Environment env) {
 		double fitnessLevel = 0;
-		//TODO (optional - Natalia): refine the calculations based on combination of environmental parameters
+		//TODO (Natalia): finish and refine the calculations based on combination of environmental parameters
 		
-		//if there's light around, more eyes the better
+/*		//if there's light around, more eyes the better
 		if (env.getLightLevel() > Environment.MIN_LIGHT_LEVEL)
 			fitnessLevel += ind.getEyesNumber();
 		
@@ -62,7 +62,7 @@ public class Fitness {
 		
 		//high pollution lowers the fitness level
 		if (env.getPollutionLevel() > Environment.POLLUTION_MUTATION_THRESHOLD)
-			fitnessLevel -= Math.log1p(env.getPollutionLevel());
+			fitnessLevel -= Math.log1p(env.getPollutionLevel());*/
 		
 		return (int) Math.round(fitnessLevel);
 	}
@@ -73,12 +73,12 @@ public class Fitness {
 	 * @param envmt environment
 	 * @return same population with calculated fitness levels
 	 */
-	public List<Genome> calculatePopulationFitness(List<Genome> population, Environment envmt) {
+	public List<AntForager> calculatePopulationFitness(List<AntForager> population, Environment envmt) {
 		int fitLevel;
 
-		for (Genome gen : population) {
-			fitLevel = getFitnessLevel(gen, envmt);
-			gen.setFitness(fitLevel);
+		for (AntForager ant : population) {
+			fitLevel = getFitnessLevel(ant, envmt);
+			ant.setFoodSurplus(fitLevel);
 		}
 		
 		return population;

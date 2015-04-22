@@ -3,6 +3,12 @@
  */
 package cs580.evolution.main;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -15,6 +21,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
 import org.apache.log4j.Logger;
 
 import cs580.evolution.function.EnviGen;
@@ -22,8 +33,8 @@ import cs580.evolution.function.Fitness;
 import cs580.evolution.function.Mutation;
 import cs580.evolution.function.Reproduce;
 import cs580.evolution.function.Selection;
+import cs580.evolution.pojo.AntForager;
 import cs580.evolution.pojo.Environment;
-import cs580.evolution.pojo.Genome;
 import cs580.evolution.pojo.PopulationPair;
 
 /**
@@ -34,7 +45,9 @@ import cs580.evolution.pojo.PopulationPair;
  * @author Manjusha Upadhye
  *
  */
-public class CreatureEvolution {
+public class CreatureEvolution extends JPanel implements ActionListener {
+	private static final long serialVersionUID = -6211365806865371892L;
+	
 	//constants for output file where we dump the randomly generated initial population
 	private static final String CSV_SEPARATOR = ", ";
 	private static final String OUT_FILENAME_BASE = "C:/evolution/init_population";
@@ -42,18 +55,104 @@ public class CreatureEvolution {
 	//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
 	final static Logger log = Logger.getLogger(CreatureEvolution.class);
 	
+	private JButton btnInit;  
+	private JButton btnStart;
+	private JLabel  infoMsg;
+	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		//TODO (optional - Natalia): verbose flag as additional input argument
-		//TODO (optional - Natalia): better input arguments validation (can skip since we will know what values to plug in for demo)
-		//TODO (optional - Natalia): set environmental characteristics from input args, add whatever other input args can be handy
-		//TODO (optional - Natalia): use some existing or new method in parent selection class to calculate prevalence of offspring - like calculate potential offspring count for winners
+	    JFrame window = new JFrame("Best Ant Forager");
+	    CreatureEvolution content = new CreatureEvolution();
+	    window.setContentPane(content);
+	    window.pack();
+	    Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+	    window.setLocation((screensize.width - window.getWidth())/2, (screensize.height - window.getHeight())/2);
+	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    window.setResizable(false);  
+	    window.setVisible(true);
+	}
+
+	
+	/**
+	 * Constructor
+	 */
+	public CreatureEvolution() {
+	    setLayout(null);	//custom layout
+	    setPreferredSize(new Dimension(540, 600));
+	    setBackground(new Color(204, 204, 204));  //light grey background
+	     
+	    /*
+	     * Create the components
+	     */
+	    //TODO create inputs for population size and generations number/file
+	    btnInit = new JButton("Initialize");
+	    btnInit.addActionListener(this);
+	    btnInit.setFont(new  Font("Courier New", Font.BOLD, 16));
+	    btnInit.setBackground(new Color(51, 102, 0));
+	    btnInit.setForeground(new Color(239, 235, 214));
+	    btnInit.setBorder(null);
+	    
+	    btnStart = new JButton("Start");
+	    btnStart.addActionListener(this);
+	    btnStart.setFont(new  Font("Courier New", Font.BOLD, 16));
+	    btnStart.setBackground(new Color(51, 102, 0));
+	    btnStart.setForeground(new Color(239, 235, 214));
+	    btnStart.setBorder(null);
+	    
+		infoMsg = new JLabel("",JLabel.LEFT);
+		infoMsg.setFont(new  Font("Courier New", Font.BOLD, 16));
+		infoMsg.setForeground(new Color(51, 102, 0));
 		
-		//just 2 input args for now
+	    add(btnInit);
+	    add(btnStart);
+	    add(infoMsg);
+	      
+	    /* 
+	     * Set the position and size of each component
+	     */
+	    btnInit.setBounds(32, 10, 130, 30);
+	    btnStart.setBounds(163, 10, 130, 30);
+	    infoMsg.setBounds(32, 50, 500, 30);
+
+	    btnInit.setEnabled(true);
+	    btnStart.setEnabled(false);
+	}
+	
+	/**
+	  * Init or Start
+	  */
+	public void actionPerformed(ActionEvent evt) {
+		Object src = evt.getSource();
+		if (src == btnInit)
+			init();
+		else if (src == btnStart)
+			start();
+	}
+ 
+    /**
+     * Initialize: generate random population and display init numbers
+     */
+    void init() {
+       infoMsg.setText("Initial state");
+       btnInit.setEnabled(true);
+       btnStart.setEnabled(true);
+       repaint();
+    }	
+    
+     /**
+      * Start: validate inputs and run genetic algorithm
+      */
+     void start() {
+        infoMsg.setText("Final state");
+        btnInit.setEnabled(false);
+        btnStart.setEnabled(false);
+        repaint();
+
+        //TODO replace args with input fields and its validation
 		if (args.length > 1) {
-			log.info("************** CREATURE EVOLUTION START **************");
+			log.info("************** BEST ANT FORAGER START **************");
 			
 			int populationSize;
 			int generationsNumber = Integer.parseInt(args[1].replace("generations_number=", ""));
@@ -61,7 +160,7 @@ public class CreatureEvolution {
 			/*
 			 * initial population
 			 */
-			List<Genome> initPopulation = null;
+			List<AntForager> initPopulation = null;
 			//random population generation of a given size
 			if (args[0].contains("init_population_size")) {
 				try {
@@ -93,7 +192,7 @@ public class CreatureEvolution {
 						initPopulation = popl.getPopul();
 					} catch (IOException e) {
 						System.err.println("File " + inFilePath + " does not exist. Please enther the correct full path to a file containing initial population data");
-						System.exit(0);
+						return;
 					}
 				}
 			}
@@ -111,7 +210,7 @@ public class CreatureEvolution {
 			/*
 			 * call genetic algorithm
 			 */
-			List<Genome> winners = geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
+			List<AntForager> winners = geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
 			
 			if (winners.isEmpty()) {
 				System.out.println("\n*** NO WINNER ***");
@@ -120,22 +219,22 @@ public class CreatureEvolution {
 				System.out.println("\n*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");	
 				log.info("*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");
 				int i = 1;
-				for (Genome winner : winners) {
-					System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Genome:");
+				for (AntForager winner : winners) {
+					System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "AntForager:");
 					System.out.println(winner.toString());
-					log.info((winners.size() == 1 ? "" : i+". ") + "Genome: " + winner.toString());
+					log.info((winners.size() == 1 ? "" : i+". ") + "AntForager: " + winner.toString());
 					i++;
 				}
 			}
 			
-			log.info("************** CREATURE EVOLUTION END **************");
+			log.info("************** BEST ANT FORAGER END **************");
 			
 		} else {
 			System.err.println("Invalid number of input arguments. Please use 2 argumens in one of two options:");
 			System.err.println("1. For random initial population, use arguments \ninit_population_size=<population size>\ngenerations_number=<number of generations>");
 			System.err.println("2. For reading initial population from a file, use arguments \ninit_population_file=<population file>\ngenerations_number=<number of generations>");
 		}
-	}
+     }
 
 	
 	/**
@@ -143,20 +242,20 @@ public class CreatureEvolution {
 	 * @param initPopulation
 	 * @param initEnvironment
 	 * @param generationsNumber number of generations
-	 * @return winners' genomes
+	 * @return winners
 	 */
-	public static List<Genome> geneticAlgorithm(List<Genome> initPopulation, Environment initEnvironment, int generationsNumber) {
-		List<Genome> population = initPopulation;		//current whole population
-		List<Genome> parentsPool = null;				//potential parents - population (with fitness levels) after discarding individuals with low fitness
-		List<Genome> parents = null;					//actual parents list
-		List<Genome> newPopulation = null;				//offspring
-		Genome mom, dad, child;
+	public static List<AntForager> geneticAlgorithm(List<AntForager> initPopulation, Environment initEnvironment, int generationsNumber) {
+		List<AntForager> population = initPopulation;		//current whole population
+		List<AntForager> parentsPool = null;				//potential parents - population (with fitness levels) after discarding individuals with low fitness
+		List<AntForager> parents = null;					//actual parents list
+		List<AntForager> newPopulation = null;				//offspring
+		AntForager mom, dad, child;
 		Environment environment = initEnvironment;
 		EnviGen envGenerator = new EnviGen();
 		Reproduce reproduce = new Reproduce();
 		Mutation mutation = new Mutation();
 		Selection selection = new Selection();
-		List<Genome> winners;
+		List<AntForager> winners;
 		double tmp;	//to calculate log10 for generation number output
 		
 		//output both to terminal and log file
@@ -176,10 +275,10 @@ public class CreatureEvolution {
 			System.out.println("\n*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");	
 			log.info("*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");
 			int i = 1;
-			for (Genome winner : winners) {
-				System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "Genome:");
+			for (AntForager winner : winners) {
+				System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "AntForager:");
 				System.out.println(winner.toString());
-				log.info((winners.size() == 1 ? "" : i+". ") + "Genome: " + winner.toString());
+				log.info((winners.size() == 1 ? "" : i+". ") + "AntForager: " + winner.toString());
 				i++;
 			}
 		}
@@ -199,7 +298,7 @@ public class CreatureEvolution {
 				System.out.println("Generation " + generationCount);
 				log.info("Generation " + generationCount);
 			}
-			newPopulation = new ArrayList<Genome>();
+			newPopulation = new ArrayList<AntForager>();
 			
 			/*
 			 * potential parents pre-selection based on the fitness level
@@ -209,7 +308,6 @@ public class CreatureEvolution {
 			/*
 			 * inner loop: generating offspring as new population
 			 */
-			//TODO (optional - Natalia): instead of population size of the upper limit, use food limit from current environment state: if no more food left, no more offspring produced
 			for (int i = 0; i < population.size(); i++) {
 				//if less than two potential parents, then offspring cannot be generated
 				if (parentsPool.isEmpty() || parentsPool.size() < 2) {
@@ -252,12 +350,11 @@ public class CreatureEvolution {
 				dad.addOffspring(1);
 				
 				//remove individuals with max possible number of offspring from parents pool
-				parentsPool.removeIf(p -> (p.getOffspringCount() == Genome.MAX_OFFSPRING_COUNT));
+				parentsPool.removeIf(p -> (p.getOffspringCount() == AntForager.MAX_OFFSPRING_COUNT));
 				
 				/*
 				 * mutate
 				 */
-				//TODO (optional - Natalia): if Divya adds pollution in mutationProbability(), replace with mutationProbability(environment)
 				if (mutation.mutationProbability() >= 0.99)
 					child = Mutation.mutate(child);
 				
@@ -293,13 +390,12 @@ public class CreatureEvolution {
 	 * Generates random population of the given size
 	 * and writes this population to the CSV file
 	 * @param size number of individuals in population
-	 * @return population consisting of randomly generated genomes
-	 */
-	private static List<Genome> generateRandomPopulation(int size) {
+	 * @return population consisting of randomly generated AntForager	 */
+	private static List<AntForager> generateRandomPopulation(int size) {
 		//generating random population
-		List<Genome> randomPopulation = new ArrayList<Genome>();
+		List<AntForager> randomPopulation = new ArrayList<AntForager>();
 		for (int i = 0; i < size; i++) {
-			randomPopulation.add(Genome.generateRandomGenome());
+			randomPopulation.add(AntForager.generateRandomAnt());
 		}
 		
 		//write generated population to a CSV file
@@ -318,55 +414,34 @@ public class CreatureEvolution {
 			StringBuffer oneLine = new StringBuffer();
 			//header
 			oneLine = new StringBuffer();
-            oneLine.append("Eyes Number");
+            oneLine.append("Size (mm)");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Ears Number");
+            oneLine.append("Weight (mg)");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Legs Number");
+            oneLine.append("Jaw size (mm)");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Fins Number");
+            oneLine.append("Feromone intensity (%)");
             oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Wings Number");
-            oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Coat Thickness in cm");
-            oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Weight in kg");
-            oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Metabolism in kCal/day");
-            oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Height in m");
-            oneLine.append(CSV_SEPARATOR);
-            oneLine.append("Cooperates with others?");
-            oneLine.append(CSV_SEPARATOR);
+            oneLine.append("Antennae censory cells");
             oneLine.append("Offspring Count");
             
             bw.write(oneLine.toString());
             bw.newLine();
             
 			//data
-	        for (Genome gen : randomPopulation) {
+	        for (AntForager ant : randomPopulation) {
 	           	oneLine = new StringBuffer();
-	            oneLine.append(gen.getEyesNumber());
+	            oneLine.append(ant.getSize());
 	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getEarsNumber());
+	            oneLine.append(ant.getWeight());
 	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getLegsNumber());
+	            oneLine.append(ant.getJawSize());
 	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getFinsNumber());
+	            oneLine.append(ant.getFeromoneIntensity());
 	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getWingsNumber());
+	            oneLine.append(ant.getAntennaeSensors());
 	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getCoatThickness());
-	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getWeight());
-	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getMetabolism());
-	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getHeight());
-	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.isCooperationFlag());
-	            oneLine.append(CSV_SEPARATOR);
-	            oneLine.append(gen.getOffspringCount());
+	            oneLine.append(ant.getOffspringCount());
 	            
 	            bw.write(oneLine.toString());
 	            bw.newLine();
@@ -388,41 +463,36 @@ public class CreatureEvolution {
 
 	/**
 	 * Reads population from the CSV file
-	 * @param inFile input file containing the list of genomes
+	 * @param inFile input file containing the list of ants
 	 * @return instance containing population and its size
 	 * @throws IOException 
 	 */
 	private static PopulationPair readPopulationFromFile(File inFile) throws IOException {
-		List<Genome> inPopulation = new ArrayList<Genome>();
-		Genome gen;
+		List<AntForager> inPopulation = new ArrayList<AntForager>();
+		AntForager ant;
 		int inPopulationSize = -1;	//to skip the header line
 		
 		BufferedReader br = null;
 		String line = "";
-		String[] genome;	//to store one line as array
+		String[] AntForager;	//to store one line as array
 		br = new BufferedReader(new FileReader(inFile));
 		
 		//reading file line by line
 		while ((line = br.readLine()) != null) {
 			//skip the header line
             if (inPopulationSize >= 0) {
-				genome = line.split(CSV_SEPARATOR);
-				/*for (String s : genome) {
+				AntForager = line.split(CSV_SEPARATOR);
+				/*for (String s : AntForager) {
 					System.out.print(s+"|");
 				}*/
-				gen = new Genome();
-				gen.setEyesNumber(Integer.parseInt(genome[0]));
-				gen.setEarsNumber(Integer.parseInt(genome[1]));
-				gen.setLegsNumber(Integer.parseInt(genome[2]));
-				gen.setFinsNumber(Integer.parseInt(genome[3]));
-				gen.setWingsNumber(Integer.parseInt(genome[4]));
-				gen.setCoatThickness(Integer.parseInt(genome[5]));
-				gen.setWeight(Integer.parseInt(genome[6]));
-				gen.setMetabolism(Integer.parseInt(genome[7]));
-				gen.setHeight(Double.parseDouble(genome[8]));
-				gen.setCooperationFlag(Boolean.parseBoolean(genome[9]));
-				gen.setOffspringCount(Integer.parseInt(genome[10]));
-				inPopulation.add(gen);
+				ant = new AntForager();
+				ant.setSize(Double.parseDouble(AntForager[0]));
+				ant.setWeight(Double.parseDouble(AntForager[1]));
+				ant.setJawSize(Double.parseDouble(AntForager[2]));
+				ant.setFeromoneIntensity(Double.parseDouble(AntForager[3]));
+				ant.setAntennaeSensors(Integer.parseInt(AntForager[4]));
+				ant.setOffspringCount(Integer.parseInt(AntForager[5]));
+				inPopulation.add(ant);
             }
 			inPopulationSize ++;
 		}
@@ -435,35 +505,37 @@ public class CreatureEvolution {
 	
 	
 	/**
-	 * Determines the winner individuals - the genomes with the highest fitness level
+	 * Determines the winner individuals - the ants with the highest fitness level
 	 * @param population
 	 * @param envmt environment
 	 * @return list of individuals with the highest fitness level
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<Genome> getWinners(List<Genome> population, Environment envmt) {
+	private static List<AntForager> getWinners(List<AntForager> population, Environment envmt) {
 		if (population.isEmpty() || population == null)
 			return population;
 		
 		//calculate fitness levels for population
 		Fitness fit = new Fitness();
 		population = fit.calculatePopulationFitness(population, envmt);
-		List<Genome> winners = new ArrayList<Genome>();
+		List<AntForager> winners = new ArrayList<AntForager>();
 		
 		//sort population by fitness level in asc order
 		Collections.sort(population);
 		
 		//obtaining the top fitness level value - fitness level of the last individual in the sorted list
-		int topFitness = population.get(population.size()-1).getFitness();
-				
-		for (Genome gen : population) {
-			if (gen.getFitness() == topFitness)
-				winners.add(gen);
+		double topFitness = population.get(population.size()-1).getFoodSurplus();
+		
+		//TODO check if need to round the double values
+		for (AntForager ant : population) {
+			if (ant.getFoodSurplus() == topFitness)
+				winners.add(ant);
 		}
 		
-		//get rid of duplicate genomes from the winners list so we have distinct genomes in output
-		winners = new ArrayList<Genome> (new HashSet<Genome>(winners));
+		//get rid of duplicate AntForagers from the winners list so we have distinct AntForagers in output
+		winners = new ArrayList<AntForager> (new HashSet<AntForager>(winners));
 		return winners;
 	}
+
 
 }

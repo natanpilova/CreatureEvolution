@@ -8,9 +8,9 @@ import java.util.List;
  */
 public class PopulationPair {
     private int size;
-	private List<Genome> popul;
+	private List<AntForager> popul;
 
-    public PopulationPair(int size, List<Genome> popul) {
+    public PopulationPair(int size, List<AntForager> popul) {
         this.size = size;
         this.popul = popul;
     }
@@ -25,7 +25,7 @@ public class PopulationPair {
 	/**
 	 * @return the popul
 	 */
-	public List<Genome> getPopul() {
+	public List<AntForager> getPopul() {
 		return popul;
 	}
 }

@@ -8,8 +8,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import cs580.evolution.pojo.AntForager;
 import cs580.evolution.pojo.Environment;
-import cs580.evolution.pojo.Genome;
 
 /**
  * 
@@ -26,12 +26,10 @@ public class Selection {
 	 * @param env current environment
 	 * @return list of two parents: first mom, second dad
 	 */
-	public List<Genome> getParents(List<Genome> parentsPool, Environment envmt) {
-		//TODO (optional - Natalia): increase the probability of individuals with higher fitness to be selected
-		
+	public List<AntForager> getParents(List<AntForager> parentsPool, Environment envmt) {
 		//to store 2 parents: first mom, second dad
-		List<Genome> parents =  new ArrayList<Genome>();
-		Genome mom, dad;
+		List<AntForager> parents =  new ArrayList<AntForager>();
+		AntForager mom, dad;
 
 		//if just two individuals in the parents pool then no need to select parents, just use these two
 		if (parentsPool.size() == 2) {
@@ -65,37 +63,37 @@ public class Selection {
 	 * @return culled population (roughly half of original population size) 
 	 */
 	@SuppressWarnings("unchecked")
-	public List<Genome> cullPopulation(List<Genome> population, Environment envmt) {
+	public List<AntForager> cullPopulation(List<AntForager> population, Environment envmt) {
 		//calculate fitness levels for original population
-		List<Genome> origPopulation = new ArrayList<Genome>(population);
+		List<AntForager> origPopulation = new ArrayList<AntForager>(population);
 		origPopulation = fit.calculatePopulationFitness(origPopulation, envmt);
 		
 		//if two or less individuals in population, there's no culling
 		if (origPopulation.isEmpty() || origPopulation.size() <= 2)
 			return origPopulation;
 		
-		List<Genome> culledPopulation = new ArrayList<Genome>();	//to store fitter individuals
+		List<AntForager> culledPopulation = new ArrayList<AntForager>();	//to store fitter individuals
 		
 		//sort original population by fitness level in asc order
 		Collections.sort(origPopulation);
 		
 		//dump fitness levels into array to calculate the fitness level threshold (median)
-		Integer[] arrInt = new Integer[origPopulation.size()];
+		Double[] arr = new Double[origPopulation.size()];
 		int i = 0;
-		for (Genome gen : origPopulation) {
+		for (AntForager gen : origPopulation) {
 			//System.out.println("fitness: "+gen.getFitness());///
-			arrInt[i] = gen.getFitness();
+			arr[i] = gen.getFoodSurplus();
 			i++;
 		}
 		
 		//calculate fitness level threshold (median) - all individuals below this threshold will be discarded from parents pool
-		int half = (arrInt.length + 1)/2;
-		int fitTheshold = arrInt[half-1];
+		int half = (arr.length + 1)/2;
+		double fitTheshold = arr[half-1];
 		//System.out.println("MEDIAN: "+fitTheshold);///
 		
 		//populating the parents pool with fit enough individuals
-		for (Genome gen : origPopulation) {
-			if (gen.getFitness() >= fitTheshold)
+		for (AntForager gen : origPopulation) {
+			if (gen.getFoodSurplus() >= fitTheshold)
 				culledPopulation.add(gen);
 		}
 
