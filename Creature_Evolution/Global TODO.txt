@@ -13,7 +13,7 @@ this extra food can be used by humans (as it is done with rooibos seeds at some 
    Due April 22	
    TODO:
    - change main class so it uses AntForager instead of Genome //DONE
-   - change main class so it is with GUI (JPanel) //IN PROCESS, will finish Wednesday night
+   - change main class so it is with GUI (JPanel) //Initial GUI - DONE, need to adjust, test, and add parameters output
    
    Due April 25	
    TODO:

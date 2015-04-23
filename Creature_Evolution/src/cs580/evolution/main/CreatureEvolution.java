@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,15 +17,24 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
 
@@ -54,22 +64,40 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	
 	//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
 	final static Logger log = Logger.getLogger(CreatureEvolution.class);
-	
+
+	private JLabel lbInitPopul;
+	private JLabel lbInitPopulSize;
+	private JLabel lbGenNumber;
+	private JLabel infoMsg;
+	private JFormattedTextField inInitPopulSize;
+	private JFormattedTextField inGenNumber;
+	private JTextField inInitPopulFile;
+	private JRadioButton rbtnRandomPopul;
+	private JRadioButton rbtnFilePopul;
+	private ButtonGroup group;
+	private JButton btnOpenFile;
 	private JButton btnInit;  
 	private JButton btnStart;
-	private JLabel  infoMsg;
+	
+	private int populationSize;
+	private int generationsNumber;
+	private List<AntForager> initPopulation = null;
+	private Environment initEnvironment = null;
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-	    JFrame window = new JFrame("Best Ant Forager");
+	    JFrame window = new JFrame("Best Ant Forager | CS580 Spring 2015 Term Project | Team 5");
 	    CreatureEvolution content = new CreatureEvolution();
-	    window.setContentPane(content);
-	    window.pack();
 	    Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+	    window.setContentPane(content);
+	    window.setSize((int)(screensize.width*0.75), (int)(screensize.height*0.75));
+	   // window.pack();
+	    
 	    window.setLocation((screensize.width - window.getWidth())/2, (screensize.height - window.getHeight())/2);
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    window.setBackground(new Color(184, 206, 162)); //pale green
 	    window.setResizable(false);  
 	    window.setVisible(true);
 	}
@@ -79,32 +107,112 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	 * Constructor
 	 */
 	public CreatureEvolution() {
-	    setLayout(null);	//custom layout
-	    setPreferredSize(new Dimension(540, 600));
-	    setBackground(new Color(204, 204, 204));  //light grey background
+	    Color btnBackground = new Color(54, 88, 19);	//dark green for buttons background and labels foreground
+	    Color btnForeground = new Color(239, 235, 214);	//pale yellow for buttons foreground
+	    Color inBackground = new Color(253, 253, 253);	//light pale yellow for inputs background
+		Font font = new Font("Courier New", Font.BOLD, 16);
+		Font fontBig = new Font("Courier New", Font.BOLD, 26);
+		Font fontSmall = new Font("Courier New", Font.BOLD, 12);
+		
+		setLayout(null);	//custom layout
 	     
 	    /*
 	     * Create the components
 	     */
-	    //TODO create inputs for population size and generations number/file
+	    //radio buttons with label
+		lbInitPopul = new JLabel("Initial Population:",JLabel.LEFT);
+		lbInitPopul.setFont(font);
+		lbInitPopul.setForeground(btnBackground);
+		
+	    rbtnRandomPopul = new JRadioButton("generate random");
+	    rbtnRandomPopul.setMnemonic(KeyEvent.VK_R);
+	    rbtnRandomPopul.setActionCommand("random");
+	    rbtnRandomPopul.setSelected(true);
+
+	    lbInitPopulSize = new JLabel("of size:",JLabel.LEFT);
+	    lbInitPopulSize.setFont(font);
+	    lbInitPopulSize.setForeground(btnBackground);
+		
+	    NumberFormat intFormat = NumberFormat.getIntegerInstance();
+
+	    NumberFormatter numberFormatter = new NumberFormatter(intFormat);
+	    numberFormatter.setValueClass(Integer.class);
+	    numberFormatter.setAllowsInvalid(false);
+	    numberFormatter.setMinimum(1);
+	    numberFormatter.setMaximum(Integer.MAX_VALUE);
+
+	    inInitPopulSize = new JFormattedTextField(numberFormatter);
+	    inInitPopulSize.setFont(font);
+	    inInitPopulSize.setBorder(null);
+	    inInitPopulSize.setForeground(btnBackground);
+	    inInitPopulSize.setBackground(inBackground);
+	    
+	    rbtnFilePopul = new JRadioButton("load from file");
+	    rbtnFilePopul.setMnemonic(KeyEvent.VK_F);
+	    rbtnFilePopul.setActionCommand("from_file");
+	    
+	    inInitPopulFile = new JTextField();
+	    inInitPopulFile.setFont(fontSmall);
+	    inInitPopulFile.setBorder(null);
+	    inInitPopulFile.setForeground(btnBackground);
+	    inInitPopulFile.setBackground(inBackground);
+        
+	    btnOpenFile = new JButton("Choose");
+	    btnOpenFile.addActionListener(this);
+	    btnOpenFile.setFont(fontSmall);
+	    btnOpenFile.setBackground(btnBackground); 		
+	    btnOpenFile.setForeground(btnForeground);
+	    btnOpenFile.setBorder(null);
+	    
+	    //group the radio buttons
+	    group = new ButtonGroup();
+	    group.add(rbtnRandomPopul);
+	    group.add(rbtnFilePopul);
+
+	    rbtnRandomPopul.addActionListener(this);
+	    rbtnFilePopul.addActionListener(this);
+	    rbtnRandomPopul.setFont(font);
+	    rbtnFilePopul.setFont(font);
+	    rbtnRandomPopul.setForeground(btnBackground);
+	    rbtnFilePopul.setForeground(btnBackground);
+	    
+	    lbGenNumber = new JLabel("Number of generations:",JLabel.LEFT);
+	    lbGenNumber.setFont(font);
+	    lbGenNumber.setForeground(btnBackground);
+	    
+	    inGenNumber = new JFormattedTextField(numberFormatter);
+	    inGenNumber.setFont(font);
+	    inGenNumber.setBorder(null);
+	    inGenNumber.setForeground(btnBackground);
+	    inGenNumber.setBackground(inBackground);
+	    
 	    btnInit = new JButton("Initialize");
 	    btnInit.addActionListener(this);
-	    btnInit.setFont(new  Font("Courier New", Font.BOLD, 16));
-	    btnInit.setBackground(new Color(51, 102, 0));
-	    btnInit.setForeground(new Color(239, 235, 214));
+	    btnInit.setFont(font);
+	    btnInit.setBackground(btnBackground); 		
+	    btnInit.setForeground(btnForeground);
 	    btnInit.setBorder(null);
 	    
 	    btnStart = new JButton("Start");
 	    btnStart.addActionListener(this);
-	    btnStart.setFont(new  Font("Courier New", Font.BOLD, 16));
-	    btnStart.setBackground(new Color(51, 102, 0));
-	    btnStart.setForeground(new Color(239, 235, 214));
+	    btnStart.setFont(font);
+	    btnStart.setBackground(btnBackground);
+	    btnStart.setForeground(btnForeground);
 	    btnStart.setBorder(null);
 	    
-		infoMsg = new JLabel("",JLabel.LEFT);
-		infoMsg.setFont(new  Font("Courier New", Font.BOLD, 16));
-		infoMsg.setForeground(new Color(51, 102, 0));
+		infoMsg = new JLabel("Info msg",JLabel.LEFT);
+		infoMsg.setFont(fontBig);
+		infoMsg.setForeground(btnBackground);
 		
+		add(lbInitPopul);
+		add(rbtnRandomPopul);
+		add(lbInitPopulSize);
+		add(inInitPopulSize);
+		add(inInitPopulFile);
+		add(btnOpenFile);
+		add(inGenNumber);
+		add(rbtnFilePopul);
+		add(lbGenNumber);
 	    add(btnInit);
 	    add(btnStart);
 	    add(infoMsg);
@@ -112,128 +220,149 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    /* 
 	     * Set the position and size of each component
 	     */
-	    btnInit.setBounds(32, 10, 130, 30);
-	    btnStart.setBounds(163, 10, 130, 30);
-	    infoMsg.setBounds(32, 50, 500, 30);
+	    lbInitPopul.setBounds(20, 20, 200, 30);
+	    rbtnRandomPopul.setBounds(20, 55, 185, 30);
+	    lbInitPopulSize.setBounds(205, 55, 100, 30);
+	    inInitPopulSize.setBounds(300, 55, 150, 30);
+	    rbtnFilePopul.setBounds(20, 85, 190, 30);
+	    inInitPopulFile.setBounds(205, 85, 250, 30);
+	    btnOpenFile.setBounds(455, 85, 60, 30);
+	    
+	    lbGenNumber.setBounds(20, 140, 220, 30);
+	    inGenNumber.setBounds(250, 140, 150, 30);
+	    
+	    btnInit.setBounds(20, 200, 220, 30);
+	    btnStart.setBounds(20, 240, 220, 30);
+	    infoMsg.setBounds(600, 20, 500, 30);
 
 	    btnInit.setEnabled(true);
 	    btnStart.setEnabled(false);
+	    btnOpenFile.setVisible(false);
+		inInitPopulFile.setVisible(false);
 	}
 	
 	/**
-	  * Init or Start
-	  */
+	 * Actions listener
+	 */
 	public void actionPerformed(ActionEvent evt) {
 		Object src = evt.getSource();
-		if (src == btnInit)
+		if (evt.getActionCommand().equals("random")) {
+			lbInitPopulSize.setVisible(true);
+			inInitPopulSize.setVisible(true);
+			btnOpenFile.setVisible(false);
+			inInitPopulFile.setVisible(false);
+			
+		} else if (evt.getActionCommand().equals("from_file")) {
+			lbInitPopulSize.setVisible(false);
+			inInitPopulSize.setVisible(false);
+			btnOpenFile.setVisible(true);
+			inInitPopulFile.setVisible(true);
+			
+		} else if (src == btnOpenFile) {	
+			JFileChooser initPopulFileChooser = new JFileChooser();
+			FileFilter filterCSV = new FileNameExtensionFilter("CSV file", "csv", "CSV");
+			initPopulFileChooser.setFileFilter(filterCSV);
+		    if (initPopulFileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION)
+		    	inInitPopulFile.setText(initPopulFileChooser.getSelectedFile().getAbsolutePath());
+		    	
+		} else if (src == btnInit)
 			init();
 		else if (src == btnStart)
 			start();
 	}
  
     /**
-     * Initialize: generate random population and display init numbers
+     * Initialize: generate random population or load it from file; display init numbers
      */
     void init() {
-       infoMsg.setText("Initial state");
-       btnInit.setEnabled(true);
-       btnStart.setEnabled(true);
-       repaint();
+        infoMsg.setText("Initial state");
+        //TODO display all parameters as labels
+        btnInit.setEnabled(true);
+        btnStart.setEnabled(true);
+       
+        log.info("************** BEST ANT FORAGER START **************");
+        
+		/*
+		 * initial population
+		 */
+		//random population generation of a given size
+		if (rbtnRandomPopul.isSelected()) {
+			try {
+				populationSize = Integer.parseInt(inInitPopulSize.getText());
+				initPopulation = generateRandomPopulation(populationSize);
+				
+			} catch (NumberFormatException e) {
+				System.err.println("Invalid population size. " + e.getLocalizedMessage());
+			}
+		
+		//reading the population and its size from a file
+		} else {
+			String inFilePath = inInitPopulFile.getText();
+			File inFile = new File(inFilePath);
+			
+			if (!inFile.exists()) {
+				System.err.println("File " + inFilePath + " does not exist. Please enther the correct full path to a file containing initial population data");
+			} else {
+				PopulationPair popl;
+				try {
+					popl = readPopulationFromFile(inFile);
+					populationSize = popl.getSize();
+					initPopulation = popl.getPopul();
+				} catch (IOException e) {
+					System.err.println("File " + inFilePath + " does not exist. Please enther the correct full path to a file containing initial population data");
+					return;
+				}
+			}
+		}
+			
+		/*
+		 * initial livable environment
+		 */
+		initEnvironment = new Environment();
+		
+        /*
+         * number of generations
+         */
+		generationsNumber = Integer.parseInt(inGenNumber.getText());
+		
+		repaint();
     }	
     
      /**
       * Start: validate inputs and run genetic algorithm
       */
      void start() {
-        infoMsg.setText("Final state");
+        infoMsg.setText("In Progress...");
         btnInit.setEnabled(false);
         btnStart.setEnabled(false);
         repaint();
-
-        //TODO replace args with input fields and its validation
-		if (args.length > 1) {
-			log.info("************** BEST ANT FORAGER START **************");
-			
-			int populationSize;
-			int generationsNumber = Integer.parseInt(args[1].replace("generations_number=", ""));
-			
-			/*
-			 * initial population
-			 */
-			List<AntForager> initPopulation = null;
-			//random population generation of a given size
-			if (args[0].contains("init_population_size")) {
-				try {
-					populationSize = Integer.parseInt(args[0].replace("init_population_size=", ""));
-					if (populationSize <= 0) {
-						System.err.println("Invalid population size. Please enter number greater than 0");
-						System.exit(0);
-					}
-					initPopulation = generateRandomPopulation(populationSize);
-					
-				} catch (NumberFormatException e) {
-					System.err.println("Invalid population size. Please enter integer value greater than 0");
-					System.exit(0);
-				}
-				
-			} else {
-				//reading the population and its size from a file
-				String inFilePath = args[0].replace("init_population_file=", "");
-				File inFile = new File(inFilePath);
-				
-				if (!inFile.exists()) {
-					System.err.println("File " + inFilePath + " does not exist. Please enther the correct full path to a file containing initial population data");
-					System.exit(0);
-				} else {
-					PopulationPair popl;
-					try {
-						popl = readPopulationFromFile(inFile);
-						populationSize = popl.getSize();
-						initPopulation = popl.getPopul();
-					} catch (IOException e) {
-						System.err.println("File " + inFilePath + " does not exist. Please enther the correct full path to a file containing initial population data");
-						return;
-					}
-				}
-			}
-				
-			if (generationsNumber <= 0) {
-				System.err.println("Invalid number of generations. Please use number greater than 0");
-				System.exit(0);
-			}
-			
-			/*
-			 * initial livable environment
-			 */
-			Environment initEnvironment = new Environment();
-			
-			/*
-			 * call genetic algorithm
-			 */
-			List<AntForager> winners = geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
-			
-			if (winners.isEmpty()) {
-				System.out.println("\n*** NO WINNER ***");
-				log.info("*** NO WINNER ***");
-			} else {
-				System.out.println("\n*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");	
-				log.info("*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");
-				int i = 1;
-				for (AntForager winner : winners) {
-					System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "AntForager:");
-					System.out.println(winner.toString());
-					log.info((winners.size() == 1 ? "" : i+". ") + "AntForager: " + winner.toString());
-					i++;
-				}
-			}
-			
-			log.info("************** BEST ANT FORAGER END **************");
-			
+		
+		/*
+		 * call genetic algorithm
+		 */
+		List<AntForager> winners = geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
+		
+		if (winners.isEmpty()) {
+			System.out.println("\n*** NO WINNER ***");
+			log.info("*** NO WINNER ***");
 		} else {
-			System.err.println("Invalid number of input arguments. Please use 2 argumens in one of two options:");
-			System.err.println("1. For random initial population, use arguments \ninit_population_size=<population size>\ngenerations_number=<number of generations>");
-			System.err.println("2. For reading initial population from a file, use arguments \ninit_population_file=<population file>\ngenerations_number=<number of generations>");
+			System.out.println("\n*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");	
+			log.info("*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");
+			int i = 1;
+			for (AntForager winner : winners) {
+				System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "AntForager:");
+				System.out.println(winner.toString());
+				log.info((winners.size() == 1 ? "" : i+". ") + "AntForager: " + winner.toString());
+				i++;
+			}
 		}
+		
+		log.info("************** BEST ANT FORAGER END **************");
+		
+		infoMsg.setText("Final state");
+        btnInit.setEnabled(true);
+        btnStart.setEnabled(true);
+        repaint();
      }
 
 	
