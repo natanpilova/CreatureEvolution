@@ -13,12 +13,15 @@ this extra food can be used by humans (as it is done with rooibos seeds at some 
    Due April 22	
    TODO:
    - change main class so it uses AntForager instead of Genome //DONE
-   - change main class so it is with GUI (JPanel) //Initial GUI - DONE, need to adjust, test, and add parameters output
+   - change main class so it is with GUI (JPanel) //Initial GUI - DONE, will to adjust by 4/27, test, and add parameters output
    
    Due April 25	
    TODO:
-   - overwrite Fitness so the result of it is the food amount brought home (food found - food consumed)
    - update Selection to deal with AntForager instead of Genome //DONE
+   
+   Due April 26	
+   TODO:
+   - overwrite Fitness so the result of it is the food amount brought home (food found - food consumed)
 
 
 2. Assignee: Ankith
@@ -53,6 +56,8 @@ charts programming) - but please let me know if you disagree and want to do grap
    - use JFreeChart (https://docs.oracle.com/javase/tutorial/2d/TOC.html) (or whatever we end up with) library
      to draw "total food per generation X" and "total ants died so far" charts on the main JPane
      (requires implementation discussion)
+     UPD: Natalia will create a method on the main class for this which will get/calculate numbers needed to be represented as bars
+     (2 bars - one for "total food for generation X", one for "total ants died")
 
 
 6. Assignees: Divya, Manjusha
