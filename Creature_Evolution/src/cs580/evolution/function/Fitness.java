@@ -23,7 +23,7 @@ public class Fitness {
 	 * @return fitness level of individual
 	 */
 	public int getFitnessLevel(AntForager ind, Environment env) {
-		double fitnessLevel = 0;
+		double fitnessLevel = 1;
 		//TODO (Natalia): finish and refine the calculations based on combination of environmental parameters
 		
 /*		//if there's light around, more eyes the better

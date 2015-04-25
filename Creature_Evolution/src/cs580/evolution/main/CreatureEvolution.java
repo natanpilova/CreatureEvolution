@@ -386,6 +386,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		Selection selection = new Selection();
 		List<AntForager> winners;
 		double tmp;	//to calculate log10 for generation number output
+		int deadAntsNumber = 0;
 		
 		//output both to terminal and log file
 		System.out.println("\nInitial population size = " + population.size());
@@ -490,6 +491,11 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 				//offspring added
 				newPopulation.add(child);
 			}
+			
+			//current population is about to die so we add up to the dead ants counter here
+			deadAntsNumber += population.size();
+			//draw charts for current population before they die
+			drawCharts(population, deadAntsNumber, generationCount); //TODO maybe draw for the last not dead yet population
 			
 			//offspring can be parents in the next iteration
 			population.clear();
@@ -666,5 +672,21 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		return winners;
 	}
 
-
+	/**
+	 * Draws bar charts for current generation food surplus and total discarded number of ants
+	 * @param population
+	 * @param deadAntsNumber
+	 * @param generationNumber
+	 */
+	public static void drawCharts(List<AntForager> population, int deadAntsNumber, int generationCount) {
+		double generationFoodSurplus = 0;	//total food surplus for current population
+		
+		for (AntForager ant : population) {
+			generationFoodSurplus += ant.getFoodSurplus();
+		}
+		
+		//TODO (Ankith, Ashwin, Natalia) - draw two bar charts: for generationFoodSurplus and deadAntsNumber
+		
+	}
+	
 }

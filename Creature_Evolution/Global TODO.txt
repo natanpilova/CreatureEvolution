@@ -57,7 +57,7 @@ charts programming) - but please let me know if you disagree and want to do grap
      to draw "total food per generation X" and "total ants died so far" charts on the main JPane
      (requires implementation discussion)
      UPD: Natalia will create a method on the main class for this which will get/calculate numbers needed to be represented as bars
-     (2 bars - one for "total food for generation X", one for "total ants died")
+     (2 bars - one for "total food surplus for generation X", one for "total ants died") //metod created - drawCharts()
 
 
 6. Assignees: Divya, Manjusha
