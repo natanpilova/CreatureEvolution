@@ -13,7 +13,7 @@ this extra food can be used by humans (as it is done with rooibos seeds at some 
    Due April 22	
    TODO:
    - change main class so it uses AntForager instead of Genome //DONE
-   - change main class so it is with GUI (JPanel) //Initial GUI - DONE, will to adjust by 4/27, test, and add parameters output
+   - change main class so it is with GUI (JPanel) //DONE
    
    Due April 25	
    TODO:
@@ -51,13 +51,13 @@ I assigned these based on my feeling what is optimal work split (it is too much 
 charts programming) - but please let me know if you disagree and want to do graphics instead of report and vice versa.
 
 5. Assignees: Ashwin, Ankith, some help from Natalia
-   Due April 26	
+   Due April 27	
    TODO:
    - use JFreeChart (https://docs.oracle.com/javase/tutorial/2d/TOC.html) (or whatever we end up with) library
      to draw "total food per generation X" and "total ants died so far" charts on the main JPane
      (requires implementation discussion)
      UPD: Natalia will create a method on the main class for this which will get/calculate numbers needed to be represented as bars
-     (2 bars - one for "total food surplus for generation X", one for "total ants died") //metod created - drawCharts()
+     (2 bars - one for "total food surplus for generation X", one for "total ants died") //method created - drawCharts()
 
 
 6. Assignees: Divya, Manjusha
