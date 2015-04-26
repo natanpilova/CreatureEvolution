@@ -236,13 +236,13 @@ public class AntForager implements Comparable {
 	 */
 	@Override
 	public String toString() {
-		return "\n size = " + size + " mm, " +
-				"\n weight = " + weight + " mg, " +
-				"\n jaw size = " + jawSize + " mm, " +
-				"\n feromone marks intensity = " + feromoneIntensity + "% of trail, " +
-				"\n antennae sensory cells = " + antennaeSensors + ", " +
-				"\n offspring count = " + offspringCount + ". " +
-				"\n Food surplus = " + foodSurplus + " g.";
+		return "\n size = " + Math.round(size*100)/100.00 + " mm " +
+				"\n weight = " + Math.round(weight*100)/100.00 + " mg " +
+				"\n jaw size = " + Math.round(jawSize*100)/100.00 + " mm " +
+				"\n feromone marks intensity = " + Math.round(feromoneIntensity) + "% of trail " +
+				"\n antennae sensory cells = " + String.format("%,d", antennaeSensors) + " " +
+				"\n offspring count = " + String.format("%,d", offspringCount) + " " +
+				"\n Food surplus = " + Math.round(foodSurplus*100)/100.00 + " g";
 	}
 
 	/* (non-Javadoc)

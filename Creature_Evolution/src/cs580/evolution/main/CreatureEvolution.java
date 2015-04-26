@@ -262,9 +262,9 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    btnStart.setBounds(20, 320, 220, 30);
 	    
 	    infoMsg.setBounds(600, 20, 500, 30);
-	    infoGenerationCount.setBounds(350, 70, 250, 30);
+	    infoGenerationCount.setBounds(370, 70, 250, 30);
 	    infoPopulationSize.setBounds(820, 70, 250, 30);
-	    infoFittestAnt.setBounds(350, 130, 500, 250);
+	    infoFittestAnt.setBounds(370, 130, 500, 250);
 	    infoFittestAnt.setVerticalAlignment(JLabel.TOP);
 	    infoEnvironment.setBounds(820, 130, 400, 250);
 	    infoEnvironment.setVerticalAlignment(JLabel.TOP);
@@ -565,7 +565,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		}
 		
 		System.out.println("Final population size = " + population.size());
-		System.out.println("\nFinal environment:");
+		System.out.println("Final environment:\n");
 		System.out.println(environment.toString());
 		
 		log.info("Final population size = " + population.size());
@@ -617,6 +617,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
             oneLine.append("Feromone intensity (%)");
             oneLine.append(CSV_SEPARATOR);
             oneLine.append("Antennae censory cells");
+            oneLine.append(CSV_SEPARATOR);
             oneLine.append("Offspring Count");
             
             bw.write(oneLine.toString());
