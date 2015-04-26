@@ -3,7 +3,6 @@ package cs580.evolution.function;
 import java.util.Random;
 
 import cs580.evolution.pojo.AntForager;
-import cs580.evolution.pojo.Genome;
 
 
 /**

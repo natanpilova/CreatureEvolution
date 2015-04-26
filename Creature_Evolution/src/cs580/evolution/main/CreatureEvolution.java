@@ -69,6 +69,10 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	private JLabel lbInitPopulSize;
 	private JLabel lbGenNumber;
 	private JLabel infoMsg;
+	private JLabel infoGenerationCount;
+	private JLabel infoPopulationSize;
+	private JLabel infoFittestAnt;
+	private JLabel infoEnvironment;
 	private JFormattedTextField inInitPopulSize;
 	private JFormattedTextField inGenNumber;
 	private JTextField inInitPopulFile;
@@ -204,6 +208,23 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		infoMsg.setFont(fontBig);
 		infoMsg.setForeground(btnBackground);
 		
+		infoGenerationCount = new JLabel("Generation 1",JLabel.LEFT);
+		infoGenerationCount.setFont(font);
+		infoGenerationCount.setForeground(btnBackground);
+		
+		infoPopulationSize = new JLabel("Population size: ",JLabel.LEFT);
+		infoPopulationSize.setFont(font);
+		infoPopulationSize.setForeground(btnBackground);
+		
+		infoFittestAnt = new JLabel("Fittest ant forager:",JLabel.LEFT);
+		infoFittestAnt.setFont(font);
+		infoFittestAnt.setForeground(btnBackground);
+		
+		infoEnvironment = new JLabel("Environment:",JLabel.LEFT);
+		infoEnvironment.setFont(font);
+		infoEnvironment.setForeground(btnBackground);
+		
+		
 		add(lbInitPopul);
 		add(rbtnRandomPopul);
 		add(lbInitPopulSize);
@@ -216,6 +237,10 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    add(btnInit);
 	    add(btnStart);
 	    add(infoMsg);
+	    add(infoGenerationCount);
+	    add(infoPopulationSize);
+	    add(infoFittestAnt);
+	    add(infoEnvironment);
 	      
 	    /* 
 	     * Set the position and size of each component
@@ -224,7 +249,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    rbtnRandomPopul.setBounds(20, 55, 185, 30);
 	    
 	    lbInitPopulSize.setBounds(40, 85, 100, 30);
-	    inInitPopulSize.setBounds(120, 85, 150, 30);
+	    inInitPopulSize.setBounds(130, 85, 150, 30);
 	    
 	    rbtnFilePopul.setBounds(20, 120, 190, 30);
 	    inInitPopulFile.setBounds(40, 150, 250, 30);
@@ -235,12 +260,24 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    
 	    btnInit.setBounds(20, 280, 220, 30);
 	    btnStart.setBounds(20, 320, 220, 30);
+	    
 	    infoMsg.setBounds(600, 20, 500, 30);
+	    infoGenerationCount.setBounds(350, 70, 250, 30);
+	    infoPopulationSize.setBounds(820, 70, 250, 30);
+	    infoFittestAnt.setBounds(350, 130, 500, 250);
+	    infoFittestAnt.setVerticalAlignment(JLabel.TOP);
+	    infoEnvironment.setBounds(820, 130, 400, 250);
+	    infoEnvironment.setVerticalAlignment(JLabel.TOP);
 
 	    btnInit.setEnabled(true);
 	    btnStart.setEnabled(false);
 	    btnOpenFile.setVisible(false);
 		inInitPopulFile.setVisible(false);
+		
+		infoGenerationCount.setVisible(false);
+	    infoPopulationSize.setVisible(false);
+	    infoFittestAnt.setVisible(false);
+	    infoEnvironment.setVisible(false);
 	}
 	
 	/**
@@ -277,11 +314,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
      * Initialize: generate random population or load it from file; display init numbers
      */
     void init() {
-        infoMsg.setText("Initial state");
-        //TODO display all parameters as labels
-        btnInit.setEnabled(true);
-        btnStart.setEnabled(true);
-       
+        infoMsg.setText("Initial State");
         log.info("************** BEST ANT FORAGER START **************");
         
 		/*
@@ -327,6 +360,46 @@ public class CreatureEvolution extends JPanel implements ActionListener {
          */
 		generationsNumber = Integer.parseInt(inGenNumber.getText());
 		
+		//output both to terminal and log file
+		System.out.println("\nInitial population size = " + initPopulation.size());
+		System.out.println("Number of generations to create = " + generationsNumber);
+		log.info("Initial population size = " + initPopulation.size());
+		log.info("Number of generations to create = " + generationsNumber);
+		
+		System.out.println("\nInitial environment:");
+		System.out.println(initEnvironment.toString());
+		log.info("Initial environment:\n" + initEnvironment.toString());
+		System.out.println();
+		
+		//output most fit individuals from initial population
+		List<AntForager> initWinners = getWinners(initPopulation, initEnvironment);
+		if (!initWinners.isEmpty()) {
+			System.out.println("\n*** Fittest individual" + (initWinners.size() == 1 ? "" : "s") + " from initial population ***");	
+			log.info("*** Fittest individual" + (initWinners.size() == 1 ? "" : "s") + " from initial population ***");
+			int i = 1;
+			for (AntForager winner : initWinners) {
+				System.out.println("\n" + (initWinners.size() == 1 ? "" : i+". ") + "AntForager:");
+				System.out.println(winner.toString());
+				log.info((initWinners.size() == 1 ? "" : i+". ") + "AntForager: " + winner.toString());
+				i++;
+			}
+			infoFittestAnt.setText(convertToMultiline("Fittest Ant Forager:\n" + initWinners.get(0).toString()));
+		} else
+			infoFittestAnt.setText("Fittest Ant Forager: none");
+		System.out.println("*****\n");
+		log.info("*****");
+		
+		
+		infoGenerationCount.setVisible(true);
+		infoPopulationSize.setText("Population Size: " + infoPopulationSize);
+		infoPopulationSize.setVisible(true);
+	    infoFittestAnt.setVisible(true);
+	    infoEnvironment.setText(convertToMultiline("Environment:\n" + initEnvironment.toString()));
+	    infoEnvironment.setVisible(true);
+	    
+        btnInit.setEnabled(true);
+        btnStart.setEnabled(true);
+        
 		repaint();
     }	
     
@@ -337,16 +410,19 @@ public class CreatureEvolution extends JPanel implements ActionListener {
         infoMsg.setText("In Progress...");
         btnInit.setEnabled(false);
         btnStart.setEnabled(false);
+        infoFittestAnt.setVisible(false);
+	    infoEnvironment.setVisible(false);
         repaint();
 		
 		/*
 		 * call genetic algorithm
 		 */
-		List<AntForager> winners = geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
+		List<AntForager> winners = this.geneticAlgorithm(initPopulation, initEnvironment, generationsNumber);
 		
 		if (winners.isEmpty()) {
 			System.out.println("\n*** NO WINNER ***");
 			log.info("*** NO WINNER ***");
+			infoFittestAnt.setText("Fittest Ant Forager: none");
 		} else {
 			System.out.println("\n*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");	
 			log.info("*********** WINNER" + (winners.size() == 1 ? "" : "S") + " ***********");
@@ -357,11 +433,15 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 				log.info((winners.size() == 1 ? "" : i+". ") + "AntForager: " + winner.toString());
 				i++;
 			}
+			infoFittestAnt.setText(convertToMultiline("WINNER Ant Forager:\n" + winners.get(0).toString()));
 		}
 		
 		log.info("************** BEST ANT FORAGER END **************");
 		
-		infoMsg.setText("Final state");
+		infoMsg.setText("Final State");
+		infoFittestAnt.setVisible(true);
+	    infoEnvironment.setVisible(true);
+	    
         btnInit.setEnabled(true);
         btnStart.setEnabled(true);
         repaint();
@@ -375,7 +455,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	 * @param generationsNumber number of generations
 	 * @return winners
 	 */
-	public static List<AntForager> geneticAlgorithm(List<AntForager> initPopulation, Environment initEnvironment, int generationsNumber) {
+	public List<AntForager> geneticAlgorithm(List<AntForager> initPopulation, Environment initEnvironment, int generationsNumber) {
 		List<AntForager> population = initPopulation;		//current whole population
 		List<AntForager> parentsPool = null;				//potential parents - population (with fitness levels) after discarding individuals with low fitness
 		List<AntForager> parents = null;					//actual parents list
@@ -390,33 +470,6 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		double tmp;	//to calculate log10 for generation number output
 		int deadAntsNumber = 0;
 		
-		//output both to terminal and log file
-		System.out.println("\nInitial population size = " + population.size());
-		System.out.println("Number of generations to create = " + generationsNumber);
-		log.info("Initial population size = " + population.size());
-		log.info("Number of generations to create = " + generationsNumber);
-		
-		System.out.println("\nInitial environment:");
-		System.out.println(environment.toString());
-		log.info("Initial environment: " + environment.toString());
-		System.out.println();
-		
-		//output most fit individuals from initial population
-		winners = getWinners(population, environment);
-		if (!winners.isEmpty()) {
-			System.out.println("\n*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");	
-			log.info("*** Fittest individual" + (winners.size() == 1 ? "" : "s") + " from initial population ***");
-			int i = 1;
-			for (AntForager winner : winners) {
-				System.out.println("\n" + (winners.size() == 1 ? "" : i+". ") + "AntForager:");
-				System.out.println(winner.toString());
-				log.info((winners.size() == 1 ? "" : i+". ") + "AntForager: " + winner.toString());
-				i++;
-			}
-		}
-		System.out.println("*****\n");
-		log.info("*****");
-		
 		/*
 		 * outer loop: one iteration = one generation
 		 * stopping rule: required number of generations passed
@@ -430,6 +483,8 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 				System.out.println("Generation " + generationCount);
 				log.info("Generation " + generationCount);
 			}
+			infoGenerationCount.setText("Generation " + generationCount);
+			
 			newPopulation = new ArrayList<AntForager>();
 			
 			/*
@@ -497,7 +552,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 			//current population is about to die so we add up to the dead ants counter here
 			deadAntsNumber += population.size();
 			//draw charts for current population before they die
-			drawCharts(population, deadAntsNumber, generationCount); //TODO maybe draw for the last not dead yet population
+			this.drawCharts(population, deadAntsNumber, generationCount); //TODO maybe draw for the last not dead yet population
 			
 			//offspring can be parents in the next iteration
 			population.clear();
@@ -515,6 +570,8 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		
 		log.info("Final population size = " + population.size());
 		log.info("Final environment: " + environment.toString());
+		
+		infoEnvironment.setText(convertToMultiline("Environment: " + environment.toString()));
 		
 		//select individual with max fitness level
 		winners = getWinners(population, environment);
@@ -663,7 +720,6 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		//obtaining the top fitness level value - fitness level of the last individual in the sorted list
 		double topFitness = population.get(population.size()-1).getFoodSurplus();
 		
-		//TODO check if need to round the double values
 		for (AntForager ant : population) {
 			if (ant.getFoodSurplus() == topFitness)
 				winners.add(ant);
@@ -675,12 +731,21 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	}
 
 	/**
+	 * Makes a text label output multiple lines
+	 * @param orig
+	 * @return
+	 */
+	public static String convertToMultiline(String orig) {
+	    return "<html>" + orig.replaceAll("\n", "<br>");
+	}	
+	
+	/**
 	 * Draws bar charts for current generation food surplus and total discarded number of ants
 	 * @param population
 	 * @param deadAntsNumber
 	 * @param generationNumber
 	 */
-	public static void drawCharts(List<AntForager> population, int deadAntsNumber, int generationCount) {
+	public void drawCharts(List<AntForager> population, int deadAntsNumber, int generationCount) {
 		double generationFoodSurplus = 0;	//total food surplus for current population
 		
 		for (AntForager ant : population) {
@@ -688,7 +753,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		}
 		
 		//TODO (Ankith, Ashwin, Natalia) - draw two bar charts: for generationFoodSurplus and deadAntsNumber
-		
+		repaint();
 	}
 	
 }

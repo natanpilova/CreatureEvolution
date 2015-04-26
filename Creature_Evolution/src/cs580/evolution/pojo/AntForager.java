@@ -5,6 +5,8 @@ package cs580.evolution.pojo;
 
 import java.util.Random;
 
+import cs580.evolution.function.Reproduce;
+
 /**
  * @author Natalia Anpilova
  *
@@ -85,7 +87,7 @@ public class AntForager implements Comparable {
 		AntForager randomAnt = new AntForager();
 		Random rand = new Random(); 
 		
-		//do {
+		do {
 			double randomDouble = MAX_SIZE*rand.nextDouble();
 			if (randomDouble < MIN_SIZE)
 				randomDouble = MIN_SIZE;
@@ -119,7 +121,7 @@ public class AntForager implements Comparable {
 				randomInt = MIN_SENSORS;
 			randomAnt.setAntennaeSensors(randomInt);
 			
-		//} while (!Reproduce.GenomeCheck(randomGenome)); //check for realistic genome
+		} while (!Reproduce.AntForagerCheck(randomAnt)); //check for realistic features
 		
 		return randomAnt;
 	}
