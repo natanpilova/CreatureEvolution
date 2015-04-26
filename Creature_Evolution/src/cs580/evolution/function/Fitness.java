@@ -26,12 +26,13 @@ public class Fitness {
 		double fitnessLevel = 0;
 		double foodFound = 0;
 		double foodConsumed = 0;
+		int days = 30; //how many days forager went for food - TODO research and add real number
 		//TODO (Natalia): finish and refine the calculations based on combination of environmental parameters
 		
-		foodFound = ind.getWeight()/1000*20;	//ant forager can carry on average 20 times of its weight
+		foodFound = days*ind.getWeight()*20/1000.00;	//ant forager can carry on average 20 times of its weight
 		
 		fitnessLevel = foodFound - foodConsumed;
-		return Math.round(fitnessLevel);
+		return (Math.round(fitnessLevel*10000)/10000.00);
 		
 /*		//if there's light around, more eyes the better
 		if (env.getLightLevel() > Environment.MIN_LIGHT_LEVEL)

@@ -242,7 +242,7 @@ public class AntForager implements Comparable {
 				"\n feromone marks intensity = " + Math.round(feromoneIntensity) + "% of trail " +
 				"\n antennae sensory cells = " + String.format("%,d", antennaeSensors) + " " +
 				"\n offspring count = " + String.format("%,d", offspringCount) + " " +
-				"\n Food surplus = " + Math.round(foodSurplus*100)/100.00 + " g";
+				"\n Food surplus = " + Math.round(foodSurplus*10000)/10000.00 + " g";
 	}
 
 	/* (non-Javadoc)
