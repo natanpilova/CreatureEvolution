@@ -11,10 +11,6 @@ import cs580.evolution.pojo.Environment;
  */
 
 public class EnviGen {
-		//TODO (optional - Ankith): replace some of the hard-coded here values (number of generations for calamity and ice age)
-		//with environmental characteristics from input args - coordinate with Natalia (if she implements these input args)
-		//If we do this then best is to add them as class instance variables and pass in via constructor in here
-	
 		//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
 		final static Logger log = Logger.getLogger(CreatureEvolution.class);
 		

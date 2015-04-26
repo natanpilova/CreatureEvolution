@@ -22,9 +22,16 @@ public class Fitness {
 	 * @param env current environment
 	 * @return fitness level of individual
 	 */
-	public int getFitnessLevel(AntForager ind, Environment env) {
-		double fitnessLevel = 1;
+	public double getFitnessLevel(AntForager ind, Environment env) {
+		double fitnessLevel = 0;
+		double foodFound = 0;
+		double foodConsumed = 0;
 		//TODO (Natalia): finish and refine the calculations based on combination of environmental parameters
+		
+		foodFound = ind.getWeight()*20;	//ant forager can carry on average 20 times of its weight
+		
+		fitnessLevel = foodFound - foodConsumed;
+		return Math.round(fitnessLevel);
 		
 /*		//if there's light around, more eyes the better
 		if (env.getLightLevel() > Environment.MIN_LIGHT_LEVEL)
@@ -64,7 +71,6 @@ public class Fitness {
 		if (env.getPollutionLevel() > Environment.POLLUTION_MUTATION_THRESHOLD)
 			fitnessLevel -= Math.log1p(env.getPollutionLevel());*/
 		
-		return (int) Math.round(fitnessLevel);
 	}
 	
 	/**
@@ -74,7 +80,7 @@ public class Fitness {
 	 * @return same population with calculated fitness levels
 	 */
 	public List<AntForager> calculatePopulationFitness(List<AntForager> population, Environment envmt) {
-		int fitLevel;
+		double fitLevel;
 
 		for (AntForager ant : population) {
 			fitLevel = getFitnessLevel(ant, envmt);
