@@ -4,7 +4,7 @@
 package cs580.evolution.function;
 import java.util.Random;
 
-import cs580.evolution.pojo.Genome;
+import cs580.evolution.pojo.AntForager;
 
 /**
  * @author Ashwin Hole
@@ -18,80 +18,61 @@ public class Reproduce {
 	 * @param dad
 	 * @return kid
 	 */
-	public Genome produceChild(Genome mom, Genome dad) {
+	public AntForager produceChild(AntForager mom, AntForager dad) {
 		Random r = new Random();
 		
 		
-		int[] momarray = new int[8];
-		int[] dadarray = new int[8];
-		int[] childarray = new int[8];
-		double h;
-		boolean coop;
+		double[] momarray = new double[5];
+		double[] dadarray = new double[5];
+		double[] childarray = new double[5];
+		int as;
 		
-		momarray[0] = mom.getEyesNumber();
-		momarray[1] = mom.getEarsNumber();
-		momarray[2] = mom.getLegsNumber();
-		momarray[3] = mom.getFinsNumber();
-		momarray[4] = mom.getWingsNumber();
-		momarray[5] = mom.getCoatThickness();
-		momarray[6] = mom.getWeight();
-		momarray[7] = mom.getMetabolism();
 		
-		dadarray[0] = dad.getEyesNumber();
-		dadarray[1] = dad.getEarsNumber();
-		dadarray[2] = dad.getLegsNumber();
-		dadarray[3] = dad.getFinsNumber();
-		dadarray[4] = dad.getWingsNumber();
-		dadarray[5] = dad.getCoatThickness();
-		dadarray[6] = dad.getWeight();
-		dadarray[7] = dad.getMetabolism();
+		momarray[0] = mom.getSize();
+		momarray[1] = mom.getWeight();
+		momarray[2] = mom.getJawSize();
+		momarray[3] = mom.getFeromoneIntensity();
+		momarray[4] = (double)mom.getAntennaeSensors();
 		
-		Genome kid = null;
-		//commented this check out since we need to solve infinite loop problem: if given parents can only produce "bad" offspring then it loops forever
-//		do {
-		int crossover = r.nextInt(8);
+		
+		dadarray[0] = dad.getSize();
+		dadarray[1] = dad.getWeight();
+		dadarray[2] = dad.getJawSize();
+		dadarray[3] = dad.getFeromoneIntensity();
+		dadarray[4] = (double)dad.getAntennaeSensors();
+		
+		
+		AntForager kid = null;
+		int crossover = r.nextInt(6);
 		
 		if(crossover > 0)
 		for(int i=0;i<crossover;i++)
 		childarray[i] = momarray[i];
 		
-		if(crossover < 8)
-		for(int i=crossover;i<8;i++)
+		if(crossover < 5)
+		for(int i=crossover;i<5;i++)
 		childarray[i] = dadarray[i];
 		
-		coop = dad.isCooperationFlag();
+		as = (int)childarray[4];
 		
-		
-		if(crossover == 8)
-		h = mom.getHeight();	
-		else
-		h = dad.getHeight();
-		
-		kid = new Genome(childarray[0], childarray[1], childarray[2], childarray[3], childarray[4], childarray[5], childarray[6], childarray[7], h, coop);
-		
-//		}while(!GenomeCheck(kid));
+		kid = new AntForager(childarray[0], childarray[1], childarray[2], childarray[3], as);
 		
 		return kid;
 	}
 	
 	/**
-	 * Check if the resulting child has realistic genome
+	 * Check if the resulting child has realistic AntForager
 	 * @param kid
 	 * @return true if pass
 	 */
-	public static boolean GenomeCheck(Genome kid){
-		
-		if(kid.getHeight() <= 1 && kid.getWeight() <= 30 && kid.getMetabolism() <= 500)
+	public static boolean AntForagerCheck(AntForager kid){
+		if(kid.getSize()>2 && kid.getSize()<=10 && kid.getWeight()>=1 && kid.getWeight()<=2)
 		return true;
-		else if(kid.getHeight()>1 && kid.getHeight()<=10 && kid.getWeight()>30 && kid.getWeight()<=300 && kid.getMetabolism()>500 && kid.getMetabolism()<=15000)
+		else if(kid.getSize()>10 && kid.getSize()<=15 && kid.getWeight()>2 && kid.getWeight()<=3)
 		return true;
-		else if(kid.getHeight()>10 && kid.getHeight()<=30 && kid.getWeight()>300 && kid.getWeight()<=1500 && kid.getMetabolism()>15000 && kid.getMetabolism()<=50000)
+		else if(kid.getSize()>15 && kid.getSize()<=20 && kid.getWeight()>3 && kid.getWeight()<=4)
 		return true;
-		else if(kid.getHeight()>30 && kid.getHeight()<=60 && kid.getWeight()>1500 && kid.getWeight()<=5000 && kid.getMetabolism()>50000 && kid.getMetabolism()<=100000)
-		return true;
-		else if(kid.getHeight()>60 && kid.getHeight()<=80 && kid.getWeight()>5000 && kid.getWeight()<=7500 && kid.getMetabolism()>100000 && kid.getMetabolism()<=750000)
-		return true;
-		else if(kid.getHeight()>80 && kid.getWeight()>7500 && kid.getMetabolism()>750000)
+		else if(kid.getSize()>20 && kid.getSize()<=25 && kid.getWeight()>4 && kid.getWeight()<=5)
 		return true;
 		else return false;
 	}
