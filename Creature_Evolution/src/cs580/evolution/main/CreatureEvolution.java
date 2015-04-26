@@ -200,7 +200,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    btnStart.setForeground(btnForeground);
 	    btnStart.setBorder(null);
 	    
-		infoMsg = new JLabel("Info msg",JLabel.LEFT);
+		infoMsg = new JLabel("",JLabel.LEFT);
 		infoMsg.setFont(fontBig);
 		infoMsg.setForeground(btnBackground);
 		
@@ -222,17 +222,19 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	     */
 	    lbInitPopul.setBounds(20, 20, 200, 30);
 	    rbtnRandomPopul.setBounds(20, 55, 185, 30);
-	    lbInitPopulSize.setBounds(205, 55, 100, 30);
-	    inInitPopulSize.setBounds(300, 55, 150, 30);
-	    rbtnFilePopul.setBounds(20, 85, 190, 30);
-	    inInitPopulFile.setBounds(205, 85, 250, 30);
-	    btnOpenFile.setBounds(455, 85, 60, 30);
 	    
-	    lbGenNumber.setBounds(20, 140, 220, 30);
-	    inGenNumber.setBounds(250, 140, 150, 30);
+	    lbInitPopulSize.setBounds(40, 85, 100, 30);
+	    inInitPopulSize.setBounds(120, 85, 150, 30);
 	    
-	    btnInit.setBounds(20, 200, 220, 30);
-	    btnStart.setBounds(20, 240, 220, 30);
+	    rbtnFilePopul.setBounds(20, 120, 190, 30);
+	    inInitPopulFile.setBounds(40, 150, 250, 30);
+	    btnOpenFile.setBounds(285, 150, 55, 30);
+	    
+	    lbGenNumber.setBounds(20, 190, 220, 30);
+	    inGenNumber.setBounds(40, 225, 200, 30);
+	    
+	    btnInit.setBounds(20, 280, 220, 30);
+	    btnStart.setBounds(20, 320, 220, 30);
 	    infoMsg.setBounds(600, 20, 500, 30);
 
 	    btnInit.setEnabled(true);
