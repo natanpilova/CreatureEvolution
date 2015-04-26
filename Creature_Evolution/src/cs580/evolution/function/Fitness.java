@@ -28,7 +28,7 @@ public class Fitness {
 		double foodConsumed = 0;
 		//TODO (Natalia): finish and refine the calculations based on combination of environmental parameters
 		
-		foodFound = ind.getWeight()*20;	//ant forager can carry on average 20 times of its weight
+		foodFound = ind.getWeight()/1000*20;	//ant forager can carry on average 20 times of its weight
 		
 		fitnessLevel = foodFound - foodConsumed;
 		return Math.round(fitnessLevel);
