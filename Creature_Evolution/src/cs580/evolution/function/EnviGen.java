@@ -1,189 +1,211 @@
 /* Class to Generate a new Environment */
 package cs580.evolution.function;
-import org.apache.log4j.Logger;
 
+import org.apache.log4j.Logger;
 import cs580.evolution.main.CreatureEvolution;
 import cs580.evolution.pojo.Environment;
+
+import java.util.Random;
 
 /**
  * @author Ankith Raj
  *
  */
 
-public class EnviGen {
-		//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
+public class EnviGen{
+
 		final static Logger log = Logger.getLogger(CreatureEvolution.class);
 		
-		int tmax=0;					   	// If there is a calamity. Initially none
-		int direction = 1;				// Direction of the sine wave. 1: Increase, 0: Decrease. Initially increase
-		
-		int new_lightLevel;											
-		int new_temperature;										
-		int new_humidityLevel;										
-		int new_pollutionLevel;										
-		int new_foodTotalAmount;
+		float new_lightLevel;							
+		float new_temperature;							
+		int new_rainLevel;								
+		int new_pollutionLevel;								
+		int new_foodLevel;		
+		int new_predatorLevel;	
 
-					
+		// These are the general maxima and minima Climatic values that is possible for the AFRICAN continent 
+		private  static final int genminlight = 9;			// In Average hours per day. Range: 9-15
+		private  static final int genmaxlight = 15;
+		
+		private  static final int genmintemp = 10;			// In Celsius. Range: 10-50 degree celsius
+		private  static final int genmaxtemp = 50;
+		
+		private  static final int genminrain = 500;			// In mm per generation. Range: 500-5000mm
+		private  static final int genmaxrain = 5000;
+		
+		private  static final int genminpoll = 5;			// In %. Range: 5-50%
+		private  static final int genmaxpoll = 50;
+		
+		private  static final int genminfood = 30;			// In % available. Range: 30-80%
+		private  static final int genmaxfood = 80;
+		
+		private  static final int genminpred = 5;			// In % present. Range: 5-70%
+		private  static final int genmaxpred = 70;
+		
+		private  static int dflag = 0;				// Flag to check if there is a drought
+		private  static int fflag = 0;				// Flag to check if there is a flood
+		private  static int rflag = 0;				// Flag to check if there is a rare event such as a volcanic eruption or anything of such sort which is catastrophic
+		
+		Random r = new Random();
+		
+
 			public Environment EG(Environment E, int generationCount)		//The function that computes the new environment
 			{
 				new_lightLevel = E.getLightLevel();
 				new_temperature = E.getTemperature();
-				new_humidityLevel = E.getHumidityLevel();
+				new_rainLevel = E.getrainLevel();
 				new_pollutionLevel = E.getPollutionLevel();
-				new_foodTotalAmount = E.getFoodTotalAmount();
+				new_foodLevel = E.getfoodLevel();
+				new_predatorLevel = E.getpredatorLevel();
+		
+				int gcount = generationCount;
+				Random r = new Random();
 				
-				/*
-				System.out.println("Generations : "+ generationCount);
-				System.out.println("lightLevel : "+ new_lightLevel);
-				System.out.println("temperature : "+ new_temperature);
-				System.out.println("humidityLevel : "+ new_humidityLevel);
-				System.out.println("pollutionLevel : "+ new_pollutionLevel);
-				System.out.println("foodTotalAmount : "+ new_foodTotalAmount);
-				*/
+				// These are the random variables used to compute the various variables
+				float rlight = r.nextFloat();
+				int rselector = r.nextInt(2);	
+				int rpredator = r.nextInt(7);
+				int rfood = r.nextInt(4);
+				int rdrought1 = r.nextInt(200);
+				int rdrought2 = r.nextInt(200);
+				int rflood1 = r.nextInt(200);
+				int rflood2 = r.nextInt(200);
+				int rrare1 = r.nextInt(1000);
+				int rrare2 = r.nextInt(1000);
+		
+				
+				if(rdrought1 == rdrought2)		// To see whether there is a drought. The probability is 1 in 40000 generations
+				{
+					drought();					// The drought function is called
+					dflag = 1;					// Flag indicates drought
+				}
+				
+				if(rflood1 == rflood2 && dflag==0)	// To see whether there is a flood. The probability is 1 in 40000 generations
+				{
+					flood();					// The flood function is called
+					fflag = 1;					// Flag indicates flood
+				}
+				
+				if(rrare1 == rrare2)			// To see whether there is a rare event. The probability is 1 in 1000000 generations
+				{
+					rareevent();
+					rflag = 1;
+				}
+				
+				if(dflag == 0 && fflag == 0 && rflag == 0)		// If there is a drought or flood or rare event, the remaining computations are skipped
+				{
 
-			/*
-			 *  All the variables depend on temperature. Each factor varies accordingly 	
-			 * 
-			 * +35 degree C => Light = 50%
-			 * Lower than -115 degree C => Light = 0%
-			 * Higher than +185 degree C => Light = 100%
-			 * 
-			 * +35 degree C => Pollution = 50%
-			 * Lower than -115 degree C => Pollution = 0%
-			 * Higher than +185 degree C => Pollution = 50%
-			 * 
-			 * +35 degree C => Food = 1000000000
-			 * Lower than -115 degree C => Food = 0
-			 * Higher than +185 degree C => Food = 0
-			 * 
-			 * Lower than 0 degree C => Humidity = 0
-			 * Higher than +100 degree C => Humidity = 0
-			 * +50 degree C => Humidity = 50
-			 * 
-			 */
+				if(new_lightLevel < genminlight) {				// The new light level should not exceed the general boundaries
+					new_lightLevel = new_lightLevel + rlight;	// rlight is the random float variable
+					}
+				else if(new_lightLevel > genmaxlight) {
+					new_lightLevel = new_lightLevel - rlight;
+					}
+				else if(rselector == 1) {						// The increase or decrease of light level is done randomly using rselector random integer (0 or 1)
+					new_lightLevel = new_lightLevel + rlight;
+					}
+				else if(rselector == 0) {
+					new_lightLevel = new_lightLevel - rlight;
+					}
 				
-				//loop is not needed - you were going through all generations from the start - you need to generate environment just for current generation! -Natalia
-				//for(int i=1 ; i <= generationCount ; i++)				// Loops for the specified number of generations
-				//{
-				int i = generationCount;
-					
-					if(i % 50000 == 0 && i != 10000)				// Ice age every 50000 generations
-					{
-						System.out.println("Generation " + generationCount);
-						log.info("Generation " + generationCount);
-						iceage();
-						//continue;
-					}
-					else if(tmax == 1)									// Generally, an abrupt rise in temperature is followed by an iceage
-					{
-						System.out.println("Generation " + generationCount);
-						log.info("Generation " + generationCount);
-						iceage();
-						//continue;
-					}
-					
-					//moved calamity check under ice age check to avoid having both within the same generation
-					if(i == 10000)									// A big calamity after 10000 generations that rises the temperature abruptly (volcano or meteorite)
-					{
-						System.out.println("Generation " + generationCount);
-						log.info("Generation " + generationCount);
-						calamity();
-						//i++;										// It will exist for 2 generations
-						//continue;
-					}
-					
-					if(new_temperature < 0 || new_temperature > 100)
-					{
-						new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;			// Water exists only between 0 and 100
-					}
-					else
-					{
-						new_humidityLevel = new_temperature;
-					}
-					
-					
-					if(new_temperature > 185)
-					{
-						new_temperature = new_temperature - 5;			// Temperature decrease from calamity is a lot faster
-						new_lightLevel = Environment.MAX_LIGHT_LEVEL;
-						new_pollutionLevel = Environment.MAX_POLLUTION_LEVEL;
-						new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;
-						//continue;
-					}
-					
-					if(new_temperature < -115)
-					{
-						new_temperature = new_temperature + 5;					// Temperature increase from Ice age is a lot faster
-						new_lightLevel = Environment.MIN_LIGHT_LEVEL;			// Total darkness
-						new_pollutionLevel = Environment.MIN_POLLUTION_LEVEL;
-						new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;
-						//continue;
-					}
-					
-					
-					if(direction == 1)									// Temperature varies in the form of a sine wave Max=185, Min= -115
-					{
-					new_temperature = new_temperature + 1;				// Temperature increases by 1 for each generation
-					}
-					
-					else if(direction == 0)
-					{
-					new_temperature = new_temperature - 1;				// Temperature decreases by 1 for each generation
-					}
-					
-					// A temperature shift in the form of a pseudo-sine wave 
-					if(new_temperature == 185)							// Temperature upper boundary for other factors to exist
-					{
-						direction = 0;								    // Value starts to decrease after reaching maxima
-					}
-					
-					if(new_temperature == -115)							//  Temperature lower boundary for other factors to exist
-					{
-						direction = 1;							      	// Value starts to increase after reaching minima
-					}
-					
-					new_lightLevel = (new_temperature + 115) / 3;								        //Light based on temperature
-					new_pollutionLevel = (new_temperature + 115) / 3; 					                //Pollution based on temperature
-					new_foodTotalAmount = 1000000000 - (Math.abs(new_temperature-35)*(1000000000/150)); // food is peak at 35C, reduces with increase/decrease
-													
-				//}
 				
-				/*
-				System.out.println("");
-				System.out.println("new_lightLevel : "+ new_lightLevel);
-				System.out.println("new_temperature : "+ new_temperature);
-				System.out.println("new_humidityLevel : "+ new_humidityLevel);
-				System.out.println("new_pollutionLevel : "+ new_pollutionLevel);
-				System.out.println("new_foodTotalAmount : "+ new_foodTotalAmount);
-				*/
+				// The temperature depends on the light level. More the light, greater the temperature
+					new_temperature = genmintemp +  (new_lightLevel-genminlight) * (genmaxtemp-genmintemp)/(genmaxlight-genminlight);
+					if(new_temperature > genmaxtemp)
+						new_temperature = genmaxtemp;
+					if(new_temperature < genmintemp)
+						new_temperature = genmintemp;
 				
-				Environment newEnv = new Environment (new_lightLevel, new_temperature, new_humidityLevel, new_pollutionLevel, new_foodTotalAmount);
+				// The rain level depends on the light and temperature level. Less the light and temperature, more the rain
+					new_rainLevel = (int)(genminrain + (genmaxlight - new_lightLevel) * (genmaxrain-genminrain)/(genmaxlight-genminlight));
+					if(new_rainLevel > genmaxrain)
+						new_rainLevel = genmaxrain;
+					if(new_rainLevel < genminrain)
+						new_rainLevel = genminrain;
+					
+				// The Predator level depends on the rain and light level and the number of generations.
+				// As there is more light and rain, more will be the predators. And they increase with the number of generations
+					new_predatorLevel = genminpred + genminpred * rpredator  + (int) ((new_lightLevel*new_rainLevel)/(genminlight*genminrain) + Math.log(gcount));
+					if(new_predatorLevel > genmaxpred)
+						new_predatorLevel = genmaxpred;
+					if(new_predatorLevel < genminpred)
+						new_predatorLevel = genminpred;
+				
+				// THe pollution level depends on the light, rain, pollution level and the number of generations
+				// Increases with light and predator level and the number of generations, decreases with rain
+					new_pollutionLevel = genminpoll + (int) (new_lightLevel + new_predatorLevel/genminpred + Math.log(gcount) - new_rainLevel/genminrain);
+					if(new_pollutionLevel > genmaxpoll)
+						new_pollutionLevel = genmaxpoll;
+					if(new_pollutionLevel < genminpoll)
+						new_pollutionLevel = genminpoll;
+					
+				// The food level depends on the light, rain, pollution, predator level and the number of generations
+				// increases with light and rain, decreases with pollution, predator level and number of generations 
+					new_foodLevel = genminfood  + genminfood * rfood 
+												+ (int) (new_lightLevel * 2 
+												+ (new_rainLevel) * 2 / genminrain									
+												- (new_pollutionLevel) / genminpoll
+												- (new_predatorLevel) / genminpred
+												- Math.log(gcount));
+					
+					if(new_foodLevel < genminfood)
+						new_foodLevel = genminfood;
+					if(new_foodLevel > genmaxfood)
+						new_foodLevel = genmaxfood;
+				}
+			
+				Environment newEnv = new Environment((int)new_lightLevel, (int)new_temperature, new_rainLevel, new_pollutionLevel, new_foodLevel, new_predatorLevel);
 				return newEnv;
-				
+
+			}
+
+			
+			public void flood()							// All the variables are the least except rain level which is at the highest value
+			{
+				new_temperature = genmintemp;			
+				new_lightLevel = genminlight;				   	
+				new_pollutionLevel = genminpoll;			// 
+				new_foodLevel = genminfood/2;						// 
+				new_rainLevel = Environment.MAX_RAIN_LEVEL;						// 											                
+				System.out.println("-- FLOOD --");
+				log.info("-- FLOOD --");
 			}
 			
-			public void iceage()
+			public void drought()						// All the variables are the high except rain level which is at the lowest value
 			{
-				new_temperature = Environment.MIN_TEMPERATURE_LEVEL;			// Ice age is generally followed the successive year of natural calamities (Nuclear Winter)
-				new_lightLevel = Environment.MIN_LIGHT_LEVEL;				   	// Total darkness
-				new_pollutionLevel = Environment.MIN_POLLUTION_LEVEL;			// Lower the temperature, lower the pollution
-				new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;				// There would be no food at this temperature
-				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No water
-				tmax=0;											                // Calamity ends
-				System.out.println("-- ICE AGE --");
-				log.info("-- ICE AGE --");
+				new_temperature = genmaxtemp;
+				new_lightLevel = genminlight;
+				new_pollutionLevel = genmaxpoll;
+				new_foodLevel = genminfood/2;	
+				new_rainLevel = Environment.MIN_RAIN_LEVEL;
+				System.out.println("-- DROUGHT --");
+				log.info("-- DROUGHT --");
 			}
 			
-			public void calamity()
+			public void rareevent()
 			{
-				new_temperature = Environment.MAX_TEMPERATURE_LEVEL;			// Highest Temperature
-				tmax=1;											                // Indication that the temperature is at a max (calamity)
-				new_lightLevel = Environment.MAX_LIGHT_LEVEL;				    // Higher the Temperature, greater will be the light
-				new_pollutionLevel = Environment.MAX_POLLUTION_LEVEL;			// Higher the temperature, higher the pollution
-				new_foodTotalAmount = Environment.MIN_FOOD_AMOUNT;				// There would be no food at this temperature
-				new_humidityLevel = Environment.MIN_HUMIDITY_LEVEL;				// No Water
-				System.out.println("-- CALAMITY --");
-				log.info("-- CALAMITY --");
+				int rrarepicker = r.nextInt(2);				// 2 possible events chosen at random
+				if(rrarepicker == 0)						// Possible low value for everything except rain
+				{
+					new_temperature = Environment.MIN_TEMPERATURE_LEVEL;			
+					new_lightLevel = Environment.MIN_LIGHT_LEVEL; 
+					new_pollutionLevel = Environment.MIN_POLLUTION_LEVEL; 
+					new_foodLevel = genminfood/2;
+					new_rainLevel = Environment.MAX_RAIN_LEVEL;		 											                
+					System.out.println("-- RARE EVENT--");
+					log.info("-- RARE EVENT --");
+				}
+				if(rrarepicker == 1)						// Possible high value for everything except rain
+				{
+					new_temperature = Environment.MAX_TEMPERATURE_LEVEL;			
+					new_lightLevel = Environment.MAX_LIGHT_LEVEL;	 
+					new_pollutionLevel = Environment.MAX_POLLUTION_LEVEL; 
+					new_foodLevel = genminfood/3;						 
+					new_rainLevel = Environment.MAX_RAIN_LEVEL;			 											                
+					System.out.println("-- RARE EVENT--");
+					log.info("-- RARE EVENT --");
+				}
 			}
-	
-}
+			
+
+	}
