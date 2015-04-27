@@ -19,7 +19,7 @@ this extra food can be used by humans (as it is done with rooibos seeds at some 
    TODO:
    - update Selection to deal with AntForager instead of Genome //DONE
    
-   Due April 26	
+   Due April 27	
    TODO:
    - overwrite Fitness so the result of it is the food amount brought home (food found - food consumed)
 
