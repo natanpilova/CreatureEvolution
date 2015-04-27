@@ -576,7 +576,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		log.info("Final population size = " + population.size());
 		log.info("Final environment: " + environment.toString());
 		
-		infoEnvironment.setText(convertToMultiline("Environment: " + environment.toString()));
+		infoEnvironment.setText(convertToMultiline("Environment:\n" + environment.toString()));
 		
 		//select individual with max fitness level
 		winners = getWinners(population, environment);
