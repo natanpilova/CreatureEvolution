@@ -10,6 +10,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,7 +24,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
@@ -75,6 +78,8 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	//constants for output file where we dump the randomly generated initial population
 	private static final String CSV_SEPARATOR = ", ";
 	private static final String OUT_FILENAME_BASE = "C:/evolution/init_population";
+	//ant image source - copy ant.png from img subfolder to this path
+	private static final String IMG_FILENAME = "C:/evolution/img/ant.png";
 	
 	//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
 	final static Logger log = Logger.getLogger(CreatureEvolution.class);
@@ -100,6 +105,9 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	private JButton btnInit;  
 	private JButton btnStart;
 	
+	private BufferedImage antPicture;
+	private JLabel picLabel;
+	
 	private JFreeChart barChart;
 	private ChartPanel chartPanel;
 	
@@ -116,8 +124,8 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    CreatureEvolution content = new CreatureEvolution();
 	    Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 	    window.setContentPane(content);
-	    window.setSize((int)(screensize.width*0.75), (int)(screensize.height*0.75));
-	   // window.pack();
+	    window.setSize((int)(screensize.width*0.65), (int)(screensize.height*0.75));
+	    //window.pack();
 	    window.setLocation((screensize.width - window.getWidth())/2, (screensize.height - window.getHeight())/2);
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    //window.setBackground(new Color(184, 206, 162)); //pale green
@@ -238,6 +246,15 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		infoEnvironment = new JLabel("Environment:",JLabel.LEFT);
 		infoEnvironment.setFont(font);
 		infoEnvironment.setForeground(btnBackground);
+		
+		try {
+			antPicture = ImageIO.read(new File(IMG_FILENAME));
+			picLabel = new JLabel(new ImageIcon(antPicture));
+			add(picLabel);
+			picLabel.setBounds(10, 350, 350, 400);
+		} catch (IOException e) {
+			System.err.println("Cannot load ant picture");
+		}
 		
 		barChart = ChartFactory.createBarChart("", "", "",            
 											     createDataset(10, 10),          
