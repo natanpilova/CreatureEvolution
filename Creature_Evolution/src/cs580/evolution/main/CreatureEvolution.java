@@ -37,6 +37,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.NumberFormatter;
 
 import org.apache.log4j.Logger;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 import cs580.evolution.function.EnviGen;
 import cs580.evolution.function.Fitness;
@@ -58,6 +64,14 @@ import cs580.evolution.pojo.PopulationPair;
 public class CreatureEvolution extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -6211365806865371892L;
 	
+	//colors and fonts
+	private static final Color btnBackground = new Color(54, 88, 19);	//dark green for buttons background and labels foreground
+	private static final  Color btnForeground = new Color(239, 235, 214);	//pale yellow for buttons foreground
+	private static final Color inBackground = new Color(253, 253, 253);	//light pale yellow for inputs background
+	private static final Font font = new Font("Courier New", Font.BOLD, 16);
+	private static final Font fontBig = new Font("Courier New", Font.BOLD, 26);
+	private static final Font fontSmall = new Font("Courier New", Font.BOLD, 12);
+	
 	//constants for output file where we dump the randomly generated initial population
 	private static final String CSV_SEPARATOR = ", ";
 	private static final String OUT_FILENAME_BASE = "C:/evolution/init_population";
@@ -65,6 +79,9 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
 	final static Logger log = Logger.getLogger(CreatureEvolution.class);
 
+	private static int winWidth;
+	private static int winHeight;
+	
 	private JLabel lbInitPopul;
 	private JLabel lbInitPopulSize;
 	private JLabel lbGenNumber;
@@ -83,6 +100,9 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	private JButton btnInit;  
 	private JButton btnStart;
 	
+	private JFreeChart barChart;
+	private ChartPanel chartPanel;
+	
 	private int populationSize;
 	private int generationsNumber;
 	private List<AntForager> initPopulation = null;
@@ -98,12 +118,14 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    window.setContentPane(content);
 	    window.setSize((int)(screensize.width*0.75), (int)(screensize.height*0.75));
 	   // window.pack();
-	    
 	    window.setLocation((screensize.width - window.getWidth())/2, (screensize.height - window.getHeight())/2);
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    window.setBackground(new Color(184, 206, 162)); //pale green
+	    //window.setBackground(new Color(184, 206, 162)); //pale green
 	    window.setResizable(false);  
 	    window.setVisible(true);
+	    winWidth = window.getWidth();
+	    winHeight = window.getHeight();
+	    //log.debug("window width: "+window.getWidth()+", window height: "+window.getHeight());
 	}
 
 	
@@ -111,13 +133,6 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	 * Constructor
 	 */
 	public CreatureEvolution() {
-	    Color btnBackground = new Color(54, 88, 19);	//dark green for buttons background and labels foreground
-	    Color btnForeground = new Color(239, 235, 214);	//pale yellow for buttons foreground
-	    Color inBackground = new Color(253, 253, 253);	//light pale yellow for inputs background
-		Font font = new Font("Courier New", Font.BOLD, 16);
-		Font fontBig = new Font("Courier New", Font.BOLD, 26);
-		Font fontSmall = new Font("Courier New", Font.BOLD, 12);
-		
 		setLayout(null);	//custom layout
 	     
 	    /*
@@ -224,6 +239,12 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		infoEnvironment.setFont(font);
 		infoEnvironment.setForeground(btnBackground);
 		
+		barChart = ChartFactory.createBarChart("", "", "",            
+											     createDataset(10, 10),          
+											     PlotOrientation.VERTICAL,           
+											     false, true, false);
+		barChart.setBackgroundPaint(inBackground);
+		chartPanel = new ChartPanel(barChart);
 		
 		add(lbInitPopul);
 		add(rbtnRandomPopul);
@@ -241,7 +262,8 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    add(infoPopulationSize);
 	    add(infoFittestAnt);
 	    add(infoEnvironment);
-	      
+	    add(chartPanel);
+	    
 	    /* 
 	     * Set the position and size of each component
 	     */
@@ -278,6 +300,12 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    infoPopulationSize.setVisible(false);
 	    infoFittestAnt.setVisible(false);
 	    infoEnvironment.setVisible(false);
+	    
+	    chartPanel.setBounds(370, 350, 800, 400);
+	    //chartPanel.setBounds((int)0.33*winWidth, (int)0.42*winHeight, (int)0.7*winWidth, (int)0.49*winHeight);
+	    chartPanel.setVisible(false);
+	    
+	    validate();
 	}
 	
 	/**
@@ -415,7 +443,9 @@ public class CreatureEvolution extends JPanel implements ActionListener {
         btnStart.setEnabled(false);
         infoFittestAnt.setVisible(false);
 	    infoEnvironment.setVisible(false);
+	    chartPanel.setVisible(true);
         repaint();
+        validate();
 		
 		/*
 		 * call genetic algorithm
@@ -469,6 +499,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		Reproduce reproduce = new Reproduce();
 		Mutation mutation = new Mutation();
 		Selection selection = new Selection();
+		Fitness fit = new Fitness();
 		List<AntForager> winners;
 		double tmp;	//to calculate log10 for generation number output
 		int deadAntsNumber = 0;
@@ -556,7 +587,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 			//current population is about to die so we add up to the dead ants counter here
 			deadAntsNumber += population.size();
 			//draw charts for current population before they die
-			this.drawCharts(population, deadAntsNumber, generationCount); //TODO maybe draw for the last not dead yet population
+			drawCharts(population, deadAntsNumber, generationCount);
 			repaint();
 			
 			//offspring can be parents in the next iteration
@@ -568,6 +599,10 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 			 */
 			environment = envGenerator.EG(environment, generationCount);
 		}
+		population = fit.calculatePopulationFitness(population, environment);
+		drawCharts(population, deadAntsNumber, generationsNumber);
+		repaint();
+		validate();
 		
 		System.out.println("Final population size = " + population.size());
 		System.out.println("Final environment:\n");
@@ -754,11 +789,29 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	public void drawCharts(List<AntForager> population, int deadAntsNumber, int generationCount) {
 		double generationFoodSurplus = 0;	//total food surplus for current population
 		
-		for (AntForager ant : population) {
-			generationFoodSurplus += ant.getFoodSurplus();
-		}
+		if (population != null)
+			for (AntForager ant : population)
+				generationFoodSurplus += ant.getFoodSurplus();
+		remove(chartPanel);
+		barChart = ChartFactory.createBarChart("", "", "",            
+											     createDataset(generationFoodSurplus, deadAntsNumber),          
+											     PlotOrientation.VERTICAL,           
+											     false, true, false);
 		
-		//TODO (Ankith, Ashwin, Natalia) - draw two bar charts: for generationFoodSurplus and deadAntsNumber
+		barChart.setBackgroundPaint(inBackground);
+		chartPanel = new ChartPanel(barChart);
+		add(chartPanel);
+		chartPanel.setBounds(370, 350, 800, 400);
+		//chartPanel.setBounds((int)0.33*winWidth, (int)0.42*winHeight, (int)0.7*winWidth, (int)0.49*winHeight);
+		chartPanel.setVisible(true);
+		validate();
+	}
+
+	private CategoryDataset createDataset(double f , int a) {
+	    final DefaultCategoryDataset dataset = new DefaultCategoryDataset();  
+	    dataset.addValue(a , "Total Ants Discarded" , "Total Ants Discarded"); 
+	    dataset.addValue(f , "Food Collected by current generation" , "Food Collected by current generation, g"); 
+	    return dataset; 
 	}
 	
 }

@@ -160,7 +160,7 @@ public class Environment {
 	 */
 	@Override
 	public String toString() {
-		return "\n light level = " + lightLevel + "% " +
+		return "\n light level = " + lightLevel + " hrs per day " +
 				"\n temperature = " + temperature + "C " +
 				"\n rain level = " + rainLevel + " mm " +
 				"\n pollution level = " + pollutionLevel + "% " +
