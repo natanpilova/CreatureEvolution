@@ -623,8 +623,10 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 			 */
 			environment = envGenerator.EG(environment, generationCount);
 		}
+
 		population = fit.calculatePopulationFitness(population, environment);
 		drawCharts(population, deadAntsNumber, generationsNumber);
+		
 		repaint();
 		validate();
 		
@@ -639,6 +641,18 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		
 		//select individual with max fitness level
 		winners = getWinners(population, environment);
+
+		/*
+		 * calculate potential offspring for winners
+		 */
+		population = selection.cullPopulation(population, environment);
+		for (int i = 0; i < population.size(); i++) {
+			parents = selection.getParents(population, environment);
+			mom = parents.get(0);
+			dad = parents.get(1);
+			mom.addOffspring(1);
+			dad.addOffspring(1);
+		}
 		
 		return winners;
 	}
