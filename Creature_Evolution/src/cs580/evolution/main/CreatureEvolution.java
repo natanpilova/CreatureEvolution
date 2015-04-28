@@ -342,6 +342,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
      * Initialize: generate random population or load it from file; display init numbers
      */
     void init() {
+    	chartPanel.setVisible(false);
         infoMsg.setText("Initial State");
         infoGenerationCount.setText("Generation 1");
         

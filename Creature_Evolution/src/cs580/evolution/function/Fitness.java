@@ -26,6 +26,7 @@ public class Fitness {
 		double fitnessLevel = 0;
 		double foodFound = 0;
 		double foodConsumed = 0;
+		int yearsAlive = 2; //work ants live 1 to 3 years - makes 2 the average
 		int days = 30; //how many days forager went for food - TODO research and add real number
 		//TODO (Natalia): finish and refine the calculations based on combination of environmental parameters
 		
