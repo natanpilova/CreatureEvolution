@@ -79,13 +79,13 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	private static final String CSV_SEPARATOR = ", ";
 	private static final String OUT_FILENAME_BASE = "C:/evolution/init_population";
 	//ant image source - copy ant.png from img subfolder to this path
-	private static final String IMG_FILENAME = "C:/evolution/img/ant.png";
+	private static final String IMG_FILENAME = "img/ant.png";
 	
 	//log to C:/evolution/log/evolution.log file - configuration is in log4j.xml
 	final static Logger log = Logger.getLogger(CreatureEvolution.class);
 
-	private static int winWidth;
-	private static int winHeight;
+	//private static int winWidth;
+	//private static int winHeight;
 	
 	private JLabel lbInitPopul;
 	private JLabel lbInitPopulSize;
@@ -115,7 +115,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	private int generationsNumber;
 	private List<AntForager> initPopulation = null;
 	private Environment initEnvironment = null;
-	private double topDiscardedAntsNumber;
+	//private double topDiscardedAntsNumber;
 	
 	/**
 	 * @param args
@@ -125,15 +125,15 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	    CreatureEvolution content = new CreatureEvolution();
 	    Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
 	    window.setContentPane(content);
-	    window.setSize((int)(screensize.width*0.65), (int)(screensize.height*0.75));
+	    window.setSize((int)(screensize.width*0.80), (int)(screensize.height*0.90));
 	    //window.pack();
 	    window.setLocation((screensize.width - window.getWidth())/2, (screensize.height - window.getHeight())/2);
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    //window.setBackground(new Color(184, 206, 162)); //pale green
-	    window.setResizable(false);  
+	    window.setResizable(true);  
 	    window.setVisible(true);
-	    winWidth = window.getWidth();
-	    winHeight = window.getHeight();
+	   // winWidth = window.getWidth();
+	    //winHeight = window.getHeight();
 	    //log.debug("window width: "+window.getWidth()+", window height: "+window.getHeight());
 	}
 
@@ -449,7 +449,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
         btnInit.setEnabled(true);
         btnStart.setEnabled(true);
         
-        topDiscardedAntsNumber = populationSize*generationsNumber;
+        //topDiscardedAntsNumber = populationSize*generationsNumber;
         drawCharts(initPopulation, 0, 1);
         chartPanel.setVisible(true);
         

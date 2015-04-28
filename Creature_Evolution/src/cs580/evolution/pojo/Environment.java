@@ -34,8 +34,8 @@ public class Environment {
 	/**
 	 * variables - environmental characteristics
 	 */
-	private int lightLevel;				//how long is the day
-	private int temperature;			//average daily temperature in C
+	private float lightLevel;				//how long is the day
+	private float temperature;			//average daily temperature in C
 	private int rainLevel;				//rain level: 50mm means pretty dry climate, 5000mm means heavy rains
 	private int pollutionLevel;			//pollution (CO, radioactivity, waste, etc.) level: 0% means no pollution, 50% is pretty bad pollution, 100% is non-survivable
 	private int foodLevel;				//total amount of food available with the percentage
@@ -60,7 +60,7 @@ public class Environment {
 	 * @param pollutionLevel
 	 * @param foodLevel
 	 */
-	public Environment(int lightLevel, int temperature, int rainLevel,
+	public Environment(float lightLevel, float temperature, int rainLevel,
 			int pollutionLevel, int foodLevel, int predatorLevel) {
 		this.lightLevel = lightLevel;
 		this.temperature = temperature;
@@ -73,7 +73,7 @@ public class Environment {
 	/**
 	 * @return the lightLevel
 	 */
-	public int getLightLevel() {
+	public float getLightLevel() {
 		return lightLevel;
 	}
 
@@ -87,7 +87,7 @@ public class Environment {
 	/**
 	 * @return the temperature
 	 */
-	public int getTemperature() {
+	public float getTemperature() {
 		return temperature;
 	}
 
@@ -160,8 +160,8 @@ public class Environment {
 	 */
 	@Override
 	public String toString() {
-		return "\n light level = " + lightLevel + " hrs per day " +
-				"\n avg daily temperature = " + temperature + "C " +
+		return "\n light level = " + String.format("%.02f", lightLevel) + " hrs per day " +
+				"\n avg daily temperature = " + String.format("%.02f", temperature) + "C " +
 				"\n rain level = " + rainLevel + " mm per year " +
 				"\n pollution level = " + pollutionLevel + "% " +
 				"\n total food level = " + foodLevel + "% " +
@@ -177,9 +177,9 @@ public class Environment {
 		int result = 1;
 		result = prime * result + foodLevel;
 		result = prime * result + rainLevel;
-		result = prime * result + lightLevel;
+		result = prime * result + (int)lightLevel;
 		result = prime * result + pollutionLevel;
-		result = prime * result + temperature;
+		result = prime * result + (int)temperature;
 		result = prime * result + predatorLevel;
 		return result;
 	}

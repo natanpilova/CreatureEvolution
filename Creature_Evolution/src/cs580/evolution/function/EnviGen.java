@@ -1,11 +1,12 @@
 /* Class to Generate a new Environment */
 package cs580.evolution.function;
 
+import java.util.Random;
+
 import org.apache.log4j.Logger;
+
 import cs580.evolution.main.CreatureEvolution;
 import cs580.evolution.pojo.Environment;
-
-import java.util.Random;
 
 /**
  * @author Ankith Raj
@@ -41,11 +42,7 @@ public class EnviGen{
 		
 		private  static final int genminpred = 5;			// In % present. Range: 5-70%
 		private  static final int genmaxpred = 70;
-		
-		private  static int dflag = 0;				// Flag to check if there is a drought
-		private  static int fflag = 0;				// Flag to check if there is a flood
-		private  static int rflag = 0;				// Flag to check if there is a rare event such as a volcanic eruption or anything of such sort which is catastrophic
-		
+			
 		Random r = new Random();
 		
 
@@ -60,48 +57,48 @@ public class EnviGen{
 		
 				int gcount = generationCount;
 				Random r = new Random();
+				Random r2 = new Random();
 				
 				// These are the random variables used to compute the various variables
 				float rlight = r.nextFloat();
 				int rselector = r.nextInt(2);	
 				int rpredator = r.nextInt(7);
 				int rfood = r.nextInt(4);
-				int rdrought1 = r.nextInt(200);
-				int rdrought2 = r.nextInt(200);
-				int rflood1 = r.nextInt(200);
-				int rflood2 = r.nextInt(200);
-				int rrare1 = r.nextInt(1000);
-				int rrare2 = r.nextInt(1000);
+				int rdrought1 = r.nextInt(3000);
+				int rdrought2 = r2.nextInt(3000);
+				int rflood1 = r.nextInt(3000);
+				int rflood2 = r2.nextInt(3000);
+				int rrare1 = r.nextInt(15000);
+				int rrare2 = r2.nextInt(15000);
 		
 				
-				if(rdrought1 == rdrought2)		// To see whether there is a drought. The probability is 1 in 40000 generations
+				if(rdrought1 == rdrought2)		// To see whether there is a drought. The probability is 1 in 9000000 generations
 				{
 					drought();					// The drought function is called
-					dflag = 1;					// Flag indicates drought
 				}
 				
-				if(rflood1 == rflood2 && dflag==0)	// To see whether there is a flood. The probability is 1 in 40000 generations
+				else if(rflood1 == rflood2)		// To see whether there is a flood. The probability is 1 in 9000000 generations
 				{
 					flood();					// The flood function is called
-					fflag = 1;					// Flag indicates flood
 				}
 				
-				if(rrare1 == rrare2)			// To see whether there is a rare event. The probability is 1 in 1000000 generations
+				else if(rrare1 == rrare2)		// To see whether there is a rare event. The probability is 1 in 225000000 generations
 				{
 					rareevent();
-					rflag = 1;
 				}
 				
-				if(dflag == 0 && fflag == 0 && rflag == 0)		// If there is a drought or flood or rare event, the remaining computations are skipped
+				else							// If there is no drought or flood or rare event, the remaining values are executed
 				{
-
-				if(new_lightLevel < genminlight) {				// The new light level should not exceed the general boundaries
+				if(new_lightLevel < genminlight) 				// The new light level should not exceed the general boundaries
+					{											
 					new_lightLevel = new_lightLevel + rlight;	// rlight is the random float variable
 					}
-				else if(new_lightLevel > genmaxlight) {
+				else if(new_lightLevel > genmaxlight) 
+					{
 					new_lightLevel = new_lightLevel - rlight;
 					}
-				else if(rselector == 1) {						// The increase or decrease of light level is done randomly using rselector random integer (0 or 1)
+				else if(rselector == 1) 						// The increase or decrease of light level is done randomly using rselector random integer (0 or 1)
+					{						
 					new_lightLevel = new_lightLevel + rlight;
 					}
 				else if(rselector == 0) {
@@ -152,9 +149,11 @@ public class EnviGen{
 						new_foodLevel = genminfood;
 					if(new_foodLevel > genmaxfood)
 						new_foodLevel = genmaxfood;
+				
 				}
-			
-				Environment newEnv = new Environment((int)new_lightLevel, (int)new_temperature, new_rainLevel, new_pollutionLevel, new_foodLevel, new_predatorLevel);
+				
+								
+				Environment newEnv = new Environment(new_lightLevel, new_temperature, new_rainLevel, new_pollutionLevel, new_foodLevel, new_predatorLevel);
 				return newEnv;
 
 			}
@@ -164,9 +163,9 @@ public class EnviGen{
 			{
 				new_temperature = genmintemp;			
 				new_lightLevel = genminlight;				   	
-				new_pollutionLevel = genminpoll;			// 
-				new_foodLevel = genminfood/2;						// 
-				new_rainLevel = Environment.MAX_RAIN_LEVEL;						// 											                
+				new_pollutionLevel = genminpoll;
+				new_foodLevel = genminfood/2;	
+				new_rainLevel = Environment.MAX_RAIN_LEVEL;	 											                
 				System.out.println("-- FLOOD --");
 				log.info("-- FLOOD --");
 			}
@@ -174,7 +173,7 @@ public class EnviGen{
 			public void drought()						// All the variables are the high except rain level which is at the lowest value
 			{
 				new_temperature = genmaxtemp;
-				new_lightLevel = genminlight;
+				new_lightLevel = genmaxlight;
 				new_pollutionLevel = genmaxpoll;
 				new_foodLevel = genminfood/2;	
 				new_rainLevel = Environment.MIN_RAIN_LEVEL;

@@ -34,7 +34,7 @@ public class Fitness {
 		int feromoneLostTemperature = 40;				//if the temperature is 40C and above, the feromones lose its power
 		int yearsAlive = 2; 							//work ants live 1 to 3 years - makes 2 the average
 		int days = yearsAlive*365;						//how many days forager went for food - every day in subtropical climate
-		int tripsPerDay = 30*env.getLightLevel()/12;	//30 trips per day if the day is 12 hrs long; adjusting proportionally for the current day length
+		int tripsPerDay = 30*(int)env.getLightLevel()/12;	//30 trips per day if the day is 12 hrs long; adjusting proportionally for the current day length
 		
 		double fitnessLevel = 0;
 		double foodFound = 0;
