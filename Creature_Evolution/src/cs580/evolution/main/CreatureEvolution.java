@@ -115,6 +115,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 	private int generationsNumber;
 	private List<AntForager> initPopulation = null;
 	private Environment initEnvironment = null;
+	private double topDiscardedAntsNumber;
 	
 	/**
 	 * @param args
@@ -257,7 +258,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		}
 		
 		barChart = ChartFactory.createBarChart("", "", "",            
-											     createDataset(10, 10),          
+											     createDataset(0, 0),          
 											     PlotOrientation.VERTICAL,           
 											     false, true, false);
 		barChart.setBackgroundPaint(inBackground);
@@ -359,7 +360,6 @@ public class CreatureEvolution extends JPanel implements ActionListener {
      * Initialize: generate random population or load it from file; display init numbers
      */
     void init() {
-    	chartPanel.setVisible(false);
         infoMsg.setText("Initial State");
         infoGenerationCount.setText("Generation 1");
         
@@ -449,7 +449,12 @@ public class CreatureEvolution extends JPanel implements ActionListener {
         btnInit.setEnabled(true);
         btnStart.setEnabled(true);
         
+        topDiscardedAntsNumber = populationSize*generationsNumber;
+        drawCharts(initPopulation, 0, 1);
+        chartPanel.setVisible(true);
+        
 		repaint();
+		validate();
     }	
     
      /**
@@ -519,7 +524,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		Selection selection = new Selection();
 		Fitness fit = new Fitness();
 		List<AntForager> winners;
-		double tmp;	//to calculate log10 for generation number output
+		double tmp;	//to calculate log10 for generation number system output
 		int deadAntsNumber = 0;
 		
 		/*
@@ -537,6 +542,7 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 			}
 			infoGenerationCount.setText("Generation " + String.format("%,d", generationCount));
 			repaint();
+			validate();
 			
 			newPopulation = new ArrayList<AntForager>();
 			
@@ -810,6 +816,10 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		if (population != null)
 			for (AntForager ant : population)
 				generationFoodSurplus += ant.getFoodSurplus();
+		
+		if (deadAntsNumber > 0)
+			log.info("Generation " + generationCount + " food surplus = " + generationFoodSurplus + " g");
+		
 		remove(chartPanel);
 		barChart = ChartFactory.createBarChart("", "", "",            
 											     createDataset(generationFoodSurplus, deadAntsNumber),          
@@ -817,6 +827,10 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 											     false, true, false);
 		
 		barChart.setBackgroundPaint(inBackground);
+		//CategoryPlot plot = barChart.getCategoryPlot();
+		//NumberAxis rangeAxis = (NumberAxis)plot.getRangeAxis();
+		//rangeAxis.setUpperBound(topDiscardedAntsNumber);
+		
 		chartPanel = new ChartPanel(barChart);
 		add(chartPanel);
 		chartPanel.setBounds(370, 350, 800, 400);
@@ -825,10 +839,10 @@ public class CreatureEvolution extends JPanel implements ActionListener {
 		validate();
 	}
 
-	private CategoryDataset createDataset(double f , int a) {
+	private CategoryDataset createDataset(double f, int a) {
 	    final DefaultCategoryDataset dataset = new DefaultCategoryDataset();  
-	    dataset.addValue(a , "Total Ants Discarded" , "Total Ants Discarded"); 
-	    dataset.addValue(f , "Food Collected by current generation" , "Food Collected by current generation, g"); 
+	    dataset.addValue(a , "Ants" , "Total Ants Discarded"); 
+	    dataset.addValue(f , "g" , "Food Collected by current generation, g"); 
 	    return dataset; 
 	}
 	

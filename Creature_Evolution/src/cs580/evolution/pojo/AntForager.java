@@ -31,7 +31,7 @@ public class AntForager implements Comparable {
 	public static final int MAX_SENSORS = 9000;
 	public static final int MIN_SENSORS = 6000;
 
-	public static final int MAX_OFFSPRING_COUNT = 12;
+	public static final int MAX_OFFSPRING_COUNT = 100;
 	public static final int MIN_OFFSPRING_COUNT = 0;
 	
 	/**

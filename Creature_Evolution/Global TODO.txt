@@ -21,14 +21,14 @@ this extra food can be used by humans (as it is done with rooibos seeds at some 
    
    Due April 27	
    TODO:
-   - overwrite Fitness so the result of it is the food amount brought home (food found - food consumed)
+   - overwrite Fitness so the result of it is the food amount brought home (food found - food consumed) //DONE
 
 
 2. Assignee: Ankith
    Due April 25	
    TODO:
-   - update EnviGen so it's more inline with real weather (South Africa typical climate)
-   - update Environment() constructor so the default environment is South Africa area typical climate, too
+   - update EnviGen so it's more inline with real weather (South Africa typical climate) //DONE
+   - update Environment() constructor so the default environment is South Africa area typical climate, too //DONE
 
 
 The prerequisite for assignments below is that Natalia finishes her due April 20 task.
@@ -36,13 +36,13 @@ The prerequisite for assignments below is that Natalia finishes her due April 20
 3. Assignee: Ashwin
    Due April 25	
    TODO:
-   - update Reproduce to deal with AntForager instead of Genome
+   - update Reproduce to deal with AntForager instead of Genome //DONE
 
 
 4. Assignee: Divya
    Due April 25	
    TODO:
-   - update Mutation to deal with AntForager instead of Genome
+   - update Mutation to deal with AntForager instead of Genome //DONE
 
 
 *** GROUP ASSIGNMENTS ***
@@ -53,12 +53,12 @@ charts programming) - but please let me know if you disagree and want to do grap
 5. Assignees: Ashwin, Ankith, some help from Natalia
    Due April 27	
    TODO:
-   - use JFreeChart (http://www.jfree.org/jfreechart/) or Java 2D (https://docs.oracle.com/javase/tutorial/2d/TOC.html) (or whatever we end up with) library
+   - use JFreeChart (http://www.jfree.org/jfreechart/) or Java 2D (https://docs.oracle.com/javase/tutorial/2d/TOC.html) library
      to draw "total food per generation X" and "total ants died so far" charts on the main JPane
      (requires implementation discussion)
      UPD: Natalia will create a method on the main class for this which will get/calculate numbers needed to be represented as bars
      (2 bars - one for "total food surplus for generation X", one for "total ants died") //method created - drawCharts()
-
+	 //DONE
 
 6. Assignees: Divya, Manjusha
    Due April 29	
@@ -66,7 +66,7 @@ charts programming) - but please let me know if you disagree and want to do grap
    - update progress report so it is our final report (add something about  Central Africa people'
      food collection from ants colonies - can't remember the link but I saw it on Wiki somewhere - please research)
    - slides
-
+	Note: food surplus (our fitness) added to log file - C:/evolution/log/evolution.log
 
 
 
